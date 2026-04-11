@@ -12,40 +12,20 @@ const Login = () => {
   const [githubLogginIn, setGithubLogginIn] = useState<boolean>(false)
   const [googleLogginIn, setGoogleLogginIn] = useState<boolean>(false)
   const [user, setUser] = useState<any>()
+  
+  
+  const API_URL = import.meta.env.VITE_BASE_API_URL;
+
   const handleGitHubLogin = () => {
-    setGithubLogginIn(true)
-    window.location.href = "http://localhost:3000/api/auth/github";
+    setGithubLogginIn(true);
+    window.location.href = `${API_URL}/auth/github`;
   };
 
   const handleGoogleLogin = () => {
-    setGoogleLogginIn(true)
-    window.location.href = "http://localhost:3000/api/auth/google";
+    setGoogleLogginIn(true);
+    window.location.href = `${API_URL}/auth/google`;
   };
 
-  useEffect(()=>{
-    const fetchUser = async() => {
-      try {
-        const userData = await fetch("http://localhost:3000/api/auth/me", {
-          credentials: "include"
-        })
-  
-        const user = await userData.json()
-  
-        if(user.isLoggedIn){
-          setLoggedIn(true)
-          setUser(user.user)
-        }
-
-        else setLoggedIn(false)
-        
-      } catch (error: any) {
-        console.error("Frontend fetch error: ", error.message)
-        setLoggedIn(false)
-      }
-    }
-
-    fetchUser()
-  }, [])
   
   return  (
     <div className="min-h-screen bg-background flex">
