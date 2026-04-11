@@ -22,6 +22,7 @@
     import api from "./lib/axios";
     import IndexSkeleton from "./loadings/IndexSkeleton"
     import GuardedRoutes from "./components/GuardedRoutes";
+import { AuthProvider } from "./contexts/AuthContext";
 
     const queryClient = new QueryClient();
 
@@ -29,77 +30,39 @@
 
 
     const App = () => {
-      
-      const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
-      const [isProfiled, setIsProfiled] = useState<boolean | null>(null)
-      
-      useEffect(() => {
-          const authenticate = async () => {
-            try {
-              setIsAuthenticated(null)
-              setIsProfiled(null)
-              
-              const res = await api.get("/auth/me")
-              const user = res.data.user
-              
-              if(!user) {
-                setIsProfiled(false)
-                return
-              }
+      return (
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AuthProvider>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/why-gitmate" element={<WhyGitMate />} />
+                  <Route path="*" element={<NotFound />} />
 
-              setIsAuthenticated(!!user) // true if user data exists
-              
-               try {
-                const profileRes = await api.get("/profile");
-                setIsProfiled(profileRes.data.success === true);
-              } catch (error: any) {
-                console.log("Frontend profile fetch error: ", error.message)
-                setIsProfiled(false);
-              } 
+                  <Route element={<ProtectedRoute />}>
+                    <Route element={<GuardedRoutes />}>
+                      <Route path="/onboarding" element={<Onboarding />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/feed" element={<Feed />} />
+                      <Route path="/chat" element={<Chat />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/projects" element={<Projects />} />
+                      <Route path="/settings" element={<Settings />} />
+                      <Route path="/matches" element={<Matches />} />
+                    </Route>
 
-            } catch (error: any) {
-              console.log("Frontend fetch error: ", error.message)
-              setIsAuthenticated(false)
-              setIsProfiled(false)
-            }
-          }
-          authenticate()
-      }, [])
-      
-      console.log("isProfiled: ", isProfiled)
-      console.log("isAuthenticated: ", isAuthenticated)
-      if (isAuthenticated === null || isProfiled === null) return <IndexSkeleton />
+                    <Route path="/details" element={<Details />} />
+                  </Route>
+                </Routes>
+              </AuthProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </QueryClientProvider>
+      );
+  };
 
-      return <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/why-gitmate" element={<WhyGitMate />} />
-              <Route path="*" element={<NotFound />} />
-
-              <Route element={<ProtectedRoute isAuthenticated = {isAuthenticated}/>}>
-                <Route element={<GuardedRoutes isProfiled = {isProfiled}/>}>
-                  <Route path="/onboarding" element={<Onboarding />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/feed" element={<Feed />} />
-                  <Route path="/chat" element={<Chat />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/projects" element={<Projects />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/matches" element={<Matches />} />
-                </Route>
-
-                <Route path="/details" element={<Details />} />
-              </Route>
-
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    };
-
-    export default App;
+  export default App;

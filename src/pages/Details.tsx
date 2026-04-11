@@ -2,9 +2,12 @@ import { useState } from "react";
 import api from "@/lib/axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Details() {
     const navigate = useNavigate()
+    const { refreshAuth } = useAuth();
+
   const [form, setForm] = useState({
     bio: "",
     experience: "BEGINNER",
@@ -37,7 +40,8 @@ export default function Details() {
             const res = await api.get("/profile");
 
             if (res.data.success) {
-            navigate("/dashboard");
+                await refreshAuth();
+                navigate("/dashboard");
             }
             
         } catch (error: any) {
