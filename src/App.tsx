@@ -41,13 +41,14 @@
               
               const res = await api.get("/auth/me")
               const user = res.data.user
-              setIsAuthenticated(!!user) // true if user data exists
-
+              
               if(!user) {
                 setIsProfiled(false)
                 return
               }
 
+              setIsAuthenticated(!!user) // true if user data exists
+              
                try {
                 const profileRes = await api.get("/profile");
                 setIsProfiled(profileRes.data.success === true);
@@ -59,6 +60,7 @@
             } catch (error: any) {
               console.log("Frontend fetch error: ", error.message)
               setIsAuthenticated(false)
+              setIsProfiled(false)
             }
           }
           authenticate()
