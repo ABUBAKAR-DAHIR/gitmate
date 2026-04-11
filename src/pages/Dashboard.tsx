@@ -5,7 +5,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { StatCard } from "@/components/cards/StatCard";
 import { Link } from "react-router-dom";
 
-const mockUser = {
+const user = {
   name: "Developer",
   avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=developer",
   username: "developer",
@@ -19,7 +19,7 @@ const recentMatches = [
 
 const Dashboard = () => {
   return (
-    <AppLayout user={mockUser}>
+    <AppLayout user={user}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <motion.div
@@ -28,7 +28,7 @@ const Dashboard = () => {
           className="mb-8"
         > 
           <h1 className="text-3xl font-bold text-foreground">
-            Welcome back, <span className="gradient-text">{mockUser.name}</span>
+            Welcome back, <span className="gradient-text">{user.name}</span>
           </h1>
           <p className="text-muted-foreground mt-1">Ready to find your next collaborator?</p>
         </motion.div>

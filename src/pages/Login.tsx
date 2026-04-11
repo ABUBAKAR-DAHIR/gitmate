@@ -125,7 +125,7 @@ const Login = () => {
             <Button
               variant="github"
               size="xl"
-              className="w-full"
+              className="w-full max-md:text-sm"
               onClick={handleGitHubLogin}
             >
               {
@@ -155,7 +155,7 @@ const Login = () => {
             <Button
               variant="github"
               size="xl"
-              className={`w-full ${googleLogginIn && 'opacity-50'}`}
+              className={`w-full max-sm:text-sm ${googleLogginIn && 'opacity-50'}`}
               onClick={handleGoogleLogin}
             >
               {
