@@ -1,8 +1,10 @@
 import { useState } from "react";
 import api from "@/lib/axios";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export default function Details() {
+    const navigate = useNavigate()
   const [form, setForm] = useState({
     bio: "",
     experience: "BEGINNER",
@@ -30,7 +32,10 @@ export default function Details() {
         try {
             const profile = await api.post("/profile", form);
             console.log(profile.data)
-            toast.success("Profile saved!");
+            if(profile.data.success){
+                toast.success("Profile saved!");
+                navigate("/dashboard")
+            }
             
         } catch (error: any) {
             console.error("Frontend fetch error: ", error.message)
