@@ -31,7 +31,7 @@ const Login = () => {
     <div className="min-h-screen bg-background flex">
       {/* Left Panel - Branding */}
       
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden md:px-20">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/5" />
         
         {/* Animated background elements */}

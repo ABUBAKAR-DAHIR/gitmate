@@ -38,12 +38,12 @@ export default function Details() {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 gap-4 py-10">
-    <h2 className="text-3xl font-bold">
-    Complete Your{" "}
-    <span className="bg-gradient-to-r from-green-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
-        Profile
-    </span>
-    </h2>
+        <h2 className="text-3xl font-bold">
+            Complete Your{" "}
+            <span className="bg-gradient-to-r from-green-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Profile
+            </span>
+        </h2>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-2xl bg-[#0a0a0a] border border-gray-800 rounded-2xl p-8 space-y-6 shadow-2xl"
