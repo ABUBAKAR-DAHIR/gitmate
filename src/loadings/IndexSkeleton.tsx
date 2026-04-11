@@ -2,106 +2,118 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const IndexSkeleton = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background animate-pulse">
 
-      {/* Navbar Skeleton */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border/50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
 
-            <div className="flex items-center gap-2">
-              <Skeleton className="w-8 h-8 rounded-lg" />
-              <Skeleton className="w-24 h-5" />
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <Skeleton className="w-9 h-9 rounded-xl" />
+              <Skeleton className="w-28 h-4 rounded-md" />
             </div>
 
-            <div className="flex items-center gap-4">
-              <Skeleton className="w-24 h-8 rounded-md" />
-              <Skeleton className="w-20 h-8 rounded-md" />
+            {/* Actions */}
+            <div className="flex items-center gap-3">
+              <Skeleton className="w-28 h-9 rounded-lg" />
+              <Skeleton className="w-24 h-9 rounded-lg" />
             </div>
 
           </div>
         </div>
       </nav>
 
-      {/* Hero Skeleton */}
-      <section className="pt-32 pb-20 px-4">
+      {/* Hero */}
+      <section className="pt-32 pb-24 px-6">
         <div className="max-w-5xl mx-auto text-center">
 
-          {/* badge */}
-          <Skeleton className="w-64 h-8 mx-auto rounded-full mb-8" />
+          {/* Badge */}
+          <Skeleton className="w-72 h-9 mx-auto rounded-full mb-10" />
 
-          {/* title */}
-          <div className="space-y-4 mb-6">
-            <Skeleton className="h-12 w-3/4 mx-auto" />
-            <Skeleton className="h-12 w-2/3 mx-auto" />
+          {/* Title */}
+          <div className="space-y-4 mb-8">
+            <Skeleton className="h-14 w-3/4 mx-auto rounded-lg" />
+            <Skeleton className="h-14 w-2/3 mx-auto rounded-lg" />
           </div>
 
-          {/* paragraph */}
-          <div className="space-y-2 mb-10">
+          {/* Subtitle */}
+          <div className="space-y-3 mb-12">
             <Skeleton className="h-5 w-full max-w-2xl mx-auto" />
             <Skeleton className="h-5 w-5/6 max-w-2xl mx-auto" />
             <Skeleton className="h-5 w-4/6 max-w-2xl mx-auto" />
           </div>
 
-          {/* buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Skeleton className="w-40 h-12 rounded-lg" />
-            <Skeleton className="w-40 h-12 rounded-lg" />
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Skeleton className="w-full h-16 rounded-xl" />
+            <Skeleton className="w-full h-16 rounded-xl" />
           </div>
 
         </div>
       </section>
 
-      {/* Features Skeleton */}
-      <section className="py-20 px-4 bg-card/50">
+      {/* Features */}
+      <section className="py-24 px-6 bg-card/40 border-y border-border/40">
         <div className="max-w-6xl mx-auto">
 
-          <div className="text-center mb-16 space-y-3">
-            <Skeleton className="h-8 w-80 mx-auto" />
-            <Skeleton className="h-4 w-96 mx-auto" />
+          {/* Header */}
+          <div className="text-center space-y-3 mb-16">
+            <Skeleton className="h-8 w-96 mx-auto rounded-md" />
+            <Skeleton className="h-4 w-[420px] mx-auto rounded-md" />
           </div>
 
+          {/* Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="border border-border/50 rounded-2xl p-8 text-center space-y-4"
+                className="rounded-2xl border border-border/50 p-8 space-y-5 bg-background/40"
               >
-                <Skeleton className="w-14 h-14 mx-auto rounded-xl" />
-                <Skeleton className="h-5 w-40 mx-auto" />
-                <Skeleton className="h-4 w-56 mx-auto" />
-                <Skeleton className="h-4 w-48 mx-auto" />
+                <Skeleton className="w-14 h-14 rounded-xl mx-auto" />
+                <Skeleton className="h-5 w-40 mx-auto rounded-md" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full mx-auto" />
+                  <Skeleton className="h-4 w-5/6 mx-auto" />
+                  <Skeleton className="h-4 w-4/6 mx-auto" />
+                </div>
               </div>
             ))}
 
           </div>
-
         </div>
       </section>
 
-      {/* CTA Skeleton */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto text-center border border-border/50 rounded-3xl p-12 space-y-6">
+      {/* CTA */}
+      <section className="py-24 px-6">
+        <div className="max-w-3xl mx-auto text-center">
 
-          <Skeleton className="h-8 w-72 mx-auto" />
-          <Skeleton className="h-4 w-96 mx-auto" />
+          <div className="rounded-3xl border border-border/50 bg-card/40 p-14 space-y-6">
 
-          <Skeleton className="w-40 h-12 mx-auto rounded-lg" />
+            <Skeleton className="h-8 w-80 mx-auto rounded-md" />
+            <Skeleton className="h-4 w-[420px] mx-auto rounded-md" />
 
-        </div>
-      </section>
+            <div className="pt-4">
+              <Skeleton className="w-44 h-12 mx-auto rounded-xl" />
+            </div>
 
-      {/* Footer Skeleton */}
-      <footer className="py-8 px-4 border-t border-border/50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-
-          <div className="flex items-center gap-2">
-            <Skeleton className="w-5 h-5" />
-            <Skeleton className="w-20 h-4" />
           </div>
 
-          <Skeleton className="w-48 h-4" />
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-10 px-6 border-t border-border/50">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-5 h-5 rounded" />
+            <Skeleton className="w-24 h-4 rounded" />
+          </div>
+
+          <Skeleton className="w-56 h-4 rounded" />
 
         </div>
       </footer>
