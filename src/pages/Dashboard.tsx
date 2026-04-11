@@ -47,7 +47,7 @@ const Dashboard = () => {
     staleTime: 0
   })
 
-  if(userLoading) return <div>loading...</div>
+  if(userLoading || !user) return <div>loading...</div>
 
   return (
     <AppLayout user={user}>
