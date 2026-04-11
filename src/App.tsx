@@ -19,6 +19,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Details from "./pages/Details";
+import api from "./lib/axios";
 
 const queryClient = new QueryClient();
 
@@ -27,13 +28,13 @@ const queryClient = new QueryClient();
 
 const App = () => {
   
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
   
   useEffect(() => {
       const authenticate = async () => {
         try {
-          const res = await axios.get("http://localhost:3000/api/auth/me", { withCredentials: true })
-          setIsAuthenticated(!!res.data) // true if user data exists
+          const res = await api.get("/auth/me")
+          setIsAuthenticated(!!res.data.user) // true if user data exists
         } catch (err) {
           setIsAuthenticated(false)
         }
@@ -41,7 +42,7 @@ const App = () => {
       authenticate()
   }, [])
   
-  if (isAuthenticated === null) return <div>Loading...</div> // show while checking auth
+  if (isAuthenticated === null) return <div>Loading...</div> 
 
   return <QueryClientProvider client={queryClient}>
     <TooltipProvider>

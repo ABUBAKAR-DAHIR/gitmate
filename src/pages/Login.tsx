@@ -4,7 +4,6 @@ import {SiGithub, SiGoogle} from "react-icons/si"
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import {ClipLoader} from "react-spinners"
 import {ThreeCircles} from "react-loader-spinner"
 
 const Login = () => {
