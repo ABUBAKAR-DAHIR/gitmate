@@ -20,6 +20,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Details from "./pages/Details";
 import api from "./lib/axios";
+import IndexSkeleton from "./loadings/IndexSkeleton"
 
 const queryClient = new QueryClient();
 
@@ -42,7 +43,7 @@ const App = () => {
       authenticate()
   }, [])
   
-  if (isAuthenticated === null) return <div>Loading...</div> 
+  if (isAuthenticated === null) return <IndexSkeleton />
 
   return <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -65,8 +66,8 @@ const App = () => {
             <Route path="/settings" element={<Settings />} />
             <Route path="/matches" element={<Matches />} />
           </Route>
-            <Route path="/details" element={<Details />} />
 
+          <Route path="/details" element={<Details />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
