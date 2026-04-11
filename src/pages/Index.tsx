@@ -5,10 +5,12 @@ import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const queryClient = useQueryClient()
   // const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false)
+  const isAuthenticated = useAuth()
 
   const fetchUser = async () => {
     try {
@@ -69,13 +71,13 @@ const Index = () => {
             <div className="flex items-center gap-4">
               <Link to="/why-gitmate" className="text-sm text-muted-foreground hover:text-foreground">Why GitMate?</Link>
               {
-                user ? (
+                isAuthenticated ? (
                   <Button 
                     variant="github" 
                     size="sm" 
                     onClick={() => logoutUser()}
                   >
-                    {loggingOut ? "logging out..." : "Logout"}
+                    {loggingOut ? "logging out..." : isAuthenticated? "Logout" : "Sign in"}
                   </Button>
                 ) : (
                   <Button variant="github" size="sm" asChild>
