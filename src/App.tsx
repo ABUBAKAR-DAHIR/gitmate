@@ -64,7 +64,8 @@
           authenticate()
       }, [])
 
-      
+      console.log("isProfiled: ", isProfiled)
+      console.log("isAuthenticated: ", isAuthenticated)
       if (isAuthenticated === null || isProfiled === null) return <IndexSkeleton />
 
       return <QueryClientProvider client={queryClient}>
