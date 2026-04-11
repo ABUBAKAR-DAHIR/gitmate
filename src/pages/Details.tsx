@@ -32,9 +32,12 @@ export default function Details() {
         try {
             const profile = await api.post("/profile", form);
             console.log(profile.data)
-            if(profile.data.success){
-                toast.success("Profile saved!");
-                navigate("/dashboard")
+            
+            // revalidate profile status
+            const res = await api.get("/profile");
+
+            if (res.data.success) {
+            navigate("/dashboard");
             }
             
         } catch (error: any) {
