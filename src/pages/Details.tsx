@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "@/lib/axios";
+import { toast } from "sonner";
 
 export default function Details() {
   const [form, setForm] = useState({
@@ -26,9 +27,17 @@ export default function Details() {
 
     try {
         console.log(form)
-      await api.post("/profile", form);
+        try {
+            const profile = await api.post("/profile", form);
+            toast.success("Profile saved!");
+            
+        } catch (error: any) {
+            console.error("Frontend fetch error: ", error.message)
+        }
+        finally{
+            setLoading(false)
+        }
 
-      toast("Profile saved!");
     } catch (err) {
       console.error(err);
     } finally {
