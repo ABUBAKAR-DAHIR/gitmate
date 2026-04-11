@@ -1,49 +1,56 @@
 import { motion } from "framer-motion";
-import { GitBranch, ArrowRight, Github, Code2, Users, Zap, Shield, LayoutDashboard } from "lucide-react";
+import { GitBranch, ArrowRight, Code2, Users, Zap, Shield, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios"
 import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 const Index = () => {
   const queryClient = useQueryClient()
+  // const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false)
 
   const fetchUser = async () => {
     try {
-      const resData = await axios.get("http://localhost:3000/api/auth/me", {
+      const resData = await api.get("auth/me", {
         withCredentials: true
       })
 
       return resData.data.user ?? null
     } catch (err) {
-      return null // 👈 THIS IS CRITICAL
+      return null 
     }
   }
   const logout = async () => {
-    await axios.get("http://localhost:3000/api/auth/logout", {
+    return await api.get("/auth/logout", {
       withCredentials: true
     })
   }
 
 
-  const {data: user, error, isLoading} = useQuery({
+  const {data: user, error, isLoading: userLoading} = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
-    retry: false
+    retry: false,
+    staleTime: 0
   })
 
   const {mutate: logoutUser, isPending: loggingOut} = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      queryClient.setQueryData(["user"], null);
       queryClient.invalidateQueries({ queryKey: ["user"] });
     }
   })
 
+  // useEffect(()=> {
+  //   setIsLoggingOut(loggingOut)
+  // }, [loggingOut])
 
-  if(isLoading) console.log("loading...")
-  else if(!user) console.log("not logged in") 
+  
+  
+  if(userLoading) console.log("loading...")
+  else if(loggingOut) console.log("logging out")
+  else if(!user) console.log("not logged in")
   else console.log("logged in")
   
 

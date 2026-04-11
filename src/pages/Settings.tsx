@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import { Github, Bell, Palette, Shield, LogOut } from "lucide-react";
+import { Bell, Palette, Shield, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
+import { SiGithub } from "react-icons/si";
 
 const mockUser = {
   name: "Developer",
@@ -42,7 +43,7 @@ const Settings = () => {
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Github className="w-5 h-5 text-primary" />
+                <SiGithub className="w-5 h-5 text-primary" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">GitHub Connection</h3>

@@ -1,21 +1,31 @@
 import { motion } from "framer-motion";
-import { GitBranch, Github, Shield, Lock, Code2 } from "lucide-react";
+import { GitBranch, Shield, Lock, Code2, LoaderCircle } from "lucide-react";
+import {SiGithub, SiGoogle} from "react-icons/si"
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import {ClipLoader} from "react-spinners"
+import {ThreeCircles} from "react-loader-spinner"
 
 const Login = () => {
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false)
+  const [githubLogginIn, setGithubLogginIn] = useState<boolean>(false)
+  const [googleLogginIn, setGoogleLogginIn] = useState<boolean>(false)
   const [user, setUser] = useState<any>()
   const handleGitHubLogin = () => {
-    // Simulate OAuth flow - redirect to onboarding
-    window.location.href = "./dashboard";
+    setGithubLogginIn(true)
+    window.location.href = "http://localhost:3000/api/auth/github";
+  };
+
+  const handleGoogleLogin = () => {
+    setGoogleLogginIn(true)
+    window.location.href = "http://localhost:3000/api/auth/google";
   };
 
   useEffect(()=>{
     const fetchUser = async() => {
       try {
-        const userData = await fetch("http://localhost:3000/auth/me", {
+        const userData = await fetch("http://localhost:3000/api/auth/me", {
           credentials: "include"
         })
   
@@ -132,15 +142,65 @@ const Login = () => {
           </div>
 
           {/* Login Card */}
-          <div className="bg-card border border-border/50 rounded-2xl p-8 space-y-6">
+          <div className="bg-card border border-border/50 rounded-2xl p-8 space-y-2">
             <Button
               variant="github"
               size="xl"
               className="w-full"
               onClick={handleGitHubLogin}
             >
-              <Github className="w-5 h-5" />
-              Continue with GitHub
+              {
+                  githubLogginIn 
+                  ?
+                  <>
+                    <ThreeCircles
+                      height={24} // small for inline
+                      width={24}
+                      color="#16A34A"          // outer: dark green
+                      outerCircleColor="#16A34A"
+                      middleCircleColor="#4ADE80" // middle: paler green
+                      innerCircleColor="#BBF7D0"   // inner: very pale green
+                      visible={true}
+                      ariaLabel="github-login-loader"
+                    />
+                    Logging in with GitHub...
+                  </>
+                  :
+                  <>
+                    <SiGithub className="w-5 h-5" />
+                    Continue with GitHub
+                  </>
+              }
+            </Button>
+
+            <Button
+              variant="github"
+              size="xl"
+              className={`w-full ${googleLogginIn && 'opacity-50'}`}
+              onClick={handleGoogleLogin}
+            >
+              {
+                  googleLogginIn 
+                  ?
+                  <>
+                     <ThreeCircles
+                      height={24} // small for inline
+                      width={24}
+                      color="#16A34A"          // outer: dark green
+                      outerCircleColor="#16A34A"
+                      middleCircleColor="#4ADE80" // middle: paler green
+                      innerCircleColor="#BBF7D0"   // inner: very pale green
+                      visible={true}
+                      ariaLabel="github-login-loader"
+                    />
+                    Logging in with Google...
+                  </>
+                  :
+                  <>
+                    <SiGoogle className="w-5 h-5" />
+                    Continue with Google
+                  </>
+              }
             </Button>
 
             <div className="flex items-center gap-3 p-4 rounded-xl bg-secondary/50 border border-border/50">
