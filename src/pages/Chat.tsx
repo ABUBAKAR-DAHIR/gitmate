@@ -17,21 +17,21 @@ const mockUser = {
 const mockConversations = [
   {
     id: "1",
-    user: { name: "Sarah Chen", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah", online: true },
+    user: { name: "Abubakar Dahir", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah", online: true },
     lastMessage: "That sounds like a great idea! Let me check the repo.",
     timestamp: "2m ago",
     unread: 2,
   },
   {
     id: "2",
-    user: { name: "Alex Kim", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex", online: false },
+    user: { name: "Ayush Chabbadia", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex", online: false },
     lastMessage: "I've pushed the changes to the feature branch.",
     timestamp: "1h ago",
     unread: 0,
   },
   {
     id: "3",
-    user: { name: "Jordan Lee", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=jordan", online: true },
+    user: { name: "Yagna ", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=jordan", online: true },
     lastMessage: "The ML model is ready for integration.",
     timestamp: "3h ago",
     unread: 0,
