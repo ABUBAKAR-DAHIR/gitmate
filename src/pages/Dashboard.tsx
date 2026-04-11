@@ -4,53 +4,22 @@ import { Button } from "@/components/ui/button";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { StatCard } from "@/components/cards/StatCard";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import api from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
 
-// const user = {
-//   name: "Developer",
-//   image: "https://api.dicebear.com/7.x/avataaars/svg?seed=developer",
-//   email: "developer",
-// };
+const mockUser = {
+  name: "Developer",
+  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=developer",
+  username: "developer",
+};
 
 const recentMatches = [
-  { id: "1", name: "Sarah Chen", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah", role: "Full Stack" },
-  { id: "2", name: "Alex Kim", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex", role: "Backend" },
-  { id: "3", name: "Jordan Lee", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=jordan", role: "ML Engineer" },
+  { id: "1", name: "Sarah Chen", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah", role: "Full Stack" },
+  { id: "2", name: "Alex Kim", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex", role: "Backend" },
+  { id: "3", name: "Jordan Lee", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=jordan", role: "ML Engineer" },
 ];
 
 const Dashboard = () => {
-
-  const fetchUser = async () => {
-    try {
-      const resData = await api.get("auth/me", {
-        withCredentials: true
-      })
-
-      return resData.data.user ?? null
-    } catch (err) {
-      return null 
-    }
-  }
-  const logout = async () => {
-    return await api.get("/auth/logout", {
-      withCredentials: true
-    })
-  }
-
-
-  const {data: user, error, isLoading: userLoading} = useQuery({
-    queryKey: ["user"],
-    queryFn: fetchUser,
-    retry: false,
-    staleTime: 0
-  })
-
-  if(userLoading || !user) return <div>loading...</div>
-
   return (
-    <AppLayout user={user}>
+    <AppLayout user={mockUser}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <motion.div
@@ -59,7 +28,7 @@ const Dashboard = () => {
           className="mb-8"
         > 
           <h1 className="text-3xl font-bold text-foreground">
-            Welcome back, <span className="gradient-text">{user.name}</span>
+            Welcome back, <span className="gradient-text">{mockUser.name}</span>
           </h1>
           <p className="text-muted-foreground mt-1">Ready to find your next collaborator?</p>
         </motion.div>
@@ -132,7 +101,7 @@ const Dashboard = () => {
                 {recentMatches.map((match) => (
                   <div key={match.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-secondary/50 transition-colors cursor-pointer">
                     <img
-                      src={match.image}
+                      src={match.avatar}
                       alt={match.name}
                       className="w-10 h-10 rounded-full border border-border"
                     />
