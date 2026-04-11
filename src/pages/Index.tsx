@@ -11,6 +11,7 @@ const Index = () => {
   const queryClient = useQueryClient()
   // const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false)
   const isAuthenticated = useAuth()
+    const { refreshAuth } = useAuth();
 
   const fetchUser = async () => {
     try {
@@ -39,8 +40,9 @@ const Index = () => {
 
   const {mutate: logoutUser, isPending: loggingOut} = useMutation({
     mutationFn: logout,
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      await refreshAuth()
     }
   })
 
@@ -77,7 +79,7 @@ const Index = () => {
                     size="sm" 
                     onClick={() => logoutUser()}
                   >
-                    {loggingOut ? "logging out..." : isAuthenticated? "Logout" : "Sign in"}
+                    {loggingOut ? "logging out..." : "Logout"}
                   </Button>
                 ) : (
                   <Button variant="github" size="sm" asChild>
