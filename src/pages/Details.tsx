@@ -28,7 +28,7 @@ export default function Details() {
         console.log(form)
       await api.post("/profile", form);
 
-      alert("Profile saved!");
+      toast("Profile saved!");
     } catch (err) {
       console.error(err);
     } finally {
