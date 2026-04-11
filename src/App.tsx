@@ -65,8 +65,7 @@
       }, [])
 
       
-      if (isAuthenticated === null) return <IndexSkeleton />
-      if (isProfiled === null) return <div>loading profile...</div>
+      if (isAuthenticated === null || isProfiled === null) return <IndexSkeleton />
 
       return <QueryClientProvider client={queryClient}>
         <TooltipProvider>
