@@ -16,3 +16,4 @@ It helps developers reduce command-line confusion and streamline Git workflows.
 - ⚡ Clear guidance for common Git errors
 - 🧠 Beginner-friendly Git workflow support
 
+Built by **Gitmate Team**
