@@ -18,7 +18,7 @@ jobs:
                 key: ${{secrets.SSH_KEY}}
                 script: |
                     cd /var/www/gitmate
-                    git pull 
-                    pnpm install --frozen-lock-file
-                    pnpm build 
-                    pm2 restart gitmate
+                    sudo git pull 
+                    sudo pnpm install --frozen-lockfile
+                    sudo pnpm build 
+                    sudo pm2 restart gitmate
