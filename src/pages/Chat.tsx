@@ -17,14 +17,14 @@ const mockUser = {
 const mockConversations = [
   {
     id: "1",
-    user: { name: "Abubakar Dahir", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah", online: true },
+    user: { name: "Aniket", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah", online: true },
     lastMessage: "That sounds like a great idea! Let me check the repo.",
     timestamp: "2m ago",
     unread: 2,
   },
   {
     id: "2",
-    user: { name: "Ayush Chabbadia", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex", online: false },
+    user: { name: "Ayush ", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex", online: false },
     lastMessage: "I've pushed the changes to the feature branch.",
     timestamp: "1h ago",
     unread: 0,
