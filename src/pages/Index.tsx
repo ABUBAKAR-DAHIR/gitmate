@@ -123,7 +123,7 @@
                       </Link>
                       :
                       <Link to="/login">
-                        Get Started Abuubakar Daahir
+                        Get Started
                       </Link>
 
                   }
