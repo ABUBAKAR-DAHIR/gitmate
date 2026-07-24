@@ -23,44 +23,44 @@
     import IndexSkeleton from "./loadings/IndexSkeleton"
     import GuardedRoutes from "./components/GuardedRoutes";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProviderC } from "./providers/ThemeProviderC";
 
     const queryClient = new QueryClient();
-
-
-
 
     const App = () => {
       return (
         <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AuthProvider>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/why-gitmate" element={<WhyGitMate />} />
-                  <Route path="*" element={<NotFound />} />
+            <ThemeProviderC>
+                <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter>
+                    <AuthProvider>
+                        <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/why-gitmate" element={<WhyGitMate />} />
+                        <Route path="*" element={<NotFound />} />
 
-                  <Route element={<ProtectedRoute />}>
-                    <Route element={<GuardedRoutes />}>
-                      <Route path="/onboarding" element={<Onboarding />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/feed" element={<Feed />} />
-                      <Route path="/chat" element={<Chat />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/projects" element={<Projects />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/matches" element={<Matches />} />
-                    </Route>
+                        <Route element={<ProtectedRoute />}>
+                            <Route element={<GuardedRoutes />}>
+                            <Route path="/onboarding" element={<Onboarding />} />
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/feed" element={<Feed />} />
+                            <Route path="/chat" element={<Chat />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/projects" element={<Projects />} />
+                            <Route path="/settings" element={<Settings />} />
+                            <Route path="/matches" element={<Matches />} />
+                            </Route>
 
-                    <Route path="/details" element={<Details />} />
-                  </Route>
-                </Routes>
-              </AuthProvider>
-            </BrowserRouter>
-          </TooltipProvider>
+                            <Route path="/details" element={<Details />} />
+                        </Route>
+                        </Routes>
+                    </AuthProvider>
+                    </BrowserRouter>
+                </TooltipProvider>                
+            </ThemeProviderC>
         </QueryClientProvider>
       );
   };

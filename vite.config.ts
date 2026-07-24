@@ -15,4 +15,11 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+
+  preview: {
+    host: true,
+    allowedHosts: [
+        "http://frontend-alb-1076806020.ap-south-1.elb.amazonaws.com"
+    ]
+  }
 }));
