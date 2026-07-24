@@ -20,5 +20,5 @@ jobs:
           - name: Start frontend instance refresh 
             run: | 
                 aws autoscaling start-instance-refresh \
-                    --auto-scaling-group-name frontend_asg \
+                    --auto-scaling-group-name frontend-asg \
                     --preferences MinHealthyPercentage=100
