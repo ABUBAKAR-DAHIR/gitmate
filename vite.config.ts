@@ -19,7 +19,8 @@ export default defineConfig(({ mode }) => ({
   preview: {
     host: true,
     allowedHosts: [
-        "http://frontend-alb-1076806020.ap-south-1.elb.amazonaws.com"
+        "http://frontend-alb-1076806020.ap-south-1.elb.amazonaws.com",
+        "frontend-alb-1076806020.ap-south-1.elb.amazonaws.com"
     ]
   }
 }));
