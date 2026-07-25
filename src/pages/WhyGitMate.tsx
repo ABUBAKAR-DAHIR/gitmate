@@ -46,7 +46,7 @@ const comparisons = [
 const features = [
   {
     icon: GitBranch,
-    title: "GitHub-First Profiles",
+    title: "Github-First Profiles",
     description: "Your profile is automatically built from your actual contributions, repos, and commit history.",
   },
   {
@@ -77,7 +77,7 @@ const WhyGitMate = () => {
           className="text-center mb-16"
         >
           <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
-            Why <span className="gradient-text">GitMate</span>?
+            Why <span className="gradient-text">Gitmate</span>?
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Traditional platforms are broken. We're building something better for developers who value real skills over empty claims.
@@ -97,7 +97,7 @@ const WhyGitMate = () => {
             <div className="grid grid-cols-3 gap-4 p-4 bg-secondary/30 border-b border-border/50">
               <div className="text-sm font-medium text-muted-foreground">Feature</div>
               <div className="text-sm font-medium text-muted-foreground">Traditional Platforms</div>
-              <div className="text-sm font-medium text-primary">GitMate</div>
+              <div className="text-sm font-medium text-primary">Gitmate</div>
             </div>
             
             {comparisons.map((item, index) => (

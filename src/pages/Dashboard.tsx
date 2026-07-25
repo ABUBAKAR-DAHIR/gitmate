@@ -75,7 +75,7 @@ const Dashboard = () => {
               <div className="relative z-10">
                 <h2 className="text-2xl font-bold text-foreground mb-2">Find Collaborators</h2>
                 <p className="text-muted-foreground mb-6 max-w-md">
-                  Swipe through developers with verified GitHub profiles. Match based on real code, not claims.
+                  Swipe through developers with verified Github profiles. Match based on real code, not claims.
                 </p>
                 <Button size="lg" asChild>
                   <Link to="/feed">
@@ -137,13 +137,13 @@ const Dashboard = () => {
             <div className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/30 transition-all duration-300 group-hover:shadow-glow">
               <Users className="w-6 h-6 text-accent mb-3" />
               <h4 className="font-medium text-foreground">Update Profile</h4>
-              <p className="text-sm text-muted-foreground">Sync your latest GitHub activity</p>
+              <p className="text-sm text-muted-foreground">Sync your latest Github activity</p>
             </div>
           </Link>
           <Link to="/why-gitmate" className="group">
             <div className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/30 transition-all duration-300 group-hover:shadow-glow">
               <Zap className="w-6 h-6 text-warning mb-3" />
-              <h4 className="font-medium text-foreground">Why GitMate?</h4>
+              <h4 className="font-medium text-foreground">Why Gitmate?</h4>
               <p className="text-sm text-muted-foreground">Learn about our matching algorithm</p>
             </div>
           </Link>

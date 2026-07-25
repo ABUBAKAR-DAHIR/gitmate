@@ -53,7 +53,7 @@ const mockProjects = [
   {
     id: "3",
     title: "Developer Portfolio Generator",
-    description: "CLI tool that generates beautiful developer portfolios from GitHub data with customizable themes.",
+    description: "CLI tool that generates beautiful developer portfolios from Github data with customizable themes.",
     status: "launched",
     skills: ["TypeScript", "Go", "GraphQL"],
     members: [

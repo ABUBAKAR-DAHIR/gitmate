@@ -142,12 +142,12 @@ const Login = () => {
                       visible={true}
                       ariaLabel="github-login-loader"
                     />
-                    Logging in with GitHub...
+                    Logging in with Github...
                   </>
                   :
                   <>
                     <SiGithub className="w-5 h-5" />
-                    Continue with GitHub
+                    Continue with Github
                   </>
               }
             </Button>

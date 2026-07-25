@@ -46,8 +46,8 @@ const Settings = () => {
                 <SiGithub className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">GitHub Connection</h3>
-                <p className="text-sm text-muted-foreground">Manage your GitHub authentication</p>
+                <h3 className="font-semibold text-foreground">Github Connection</h3>
+                <p className="text-sm text-muted-foreground">Manage your Github authentication</p>
               </div>
             </div>
 

@@ -89,7 +89,7 @@ return ( <div className="min-h-screen bg-background">
           </div>
 
           <span className="text-lg font-semibold text-foreground">
-            GitMate
+            Gitmate
           </span>
         </Link>
 
@@ -99,7 +99,7 @@ return ( <div className="min-h-screen bg-background">
             to="/why-gitmate"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            Why GitMate?
+            Why Gitmate?
           </Link>
 
           {isAuthenticated ? (
@@ -164,7 +164,7 @@ return ( <div className="min-h-screen bg-background">
         {/* Description */}
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 max-sm:mb-8 max-sm:text-[16px]">
 
-          Connect with developers using verified GitHub data.
+          Connect with developers using verified Github data.
           Match based on real code, not resumes.
           Build together, grow together.
 
@@ -182,7 +182,7 @@ return ( <div className="min-h-screen bg-background">
 
                 <LayoutDashboard />
 
-                Dashboard Abubakar
+                Dashboard
 
               </Link>
 
@@ -298,7 +298,7 @@ return ( <div className="min-h-screen bg-background">
       >
 
         <h2 className="text-3xl font-bold text-foreground mb-4">
-          Why Developers Choose GitMate
+          Why Developers Choose Gitmate
         </h2>
 
         <p className="text-muted-foreground max-w-xl mx-auto">

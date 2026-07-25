@@ -73,7 +73,7 @@ const Profile = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm">
-                      <RefreshCw className="w-4 h-4 mr-2" /> Sync GitHub
+                      <RefreshCw className="w-4 h-4 mr-2" /> Sync Github
                     </Button>
                     <Button variant="subtle" size="sm">
                       <Edit2 className="w-4 h-4 mr-2" /> Edit
