@@ -13,17 +13,17 @@ const queryClient = useQueryClient();
 const { isAuthenticated, refreshAuth } = useAuth();
 
 const messages = [
-"Finding developers who match your energy...",
-"Analyzing skills, interests, and experience...",
-"Matching you through real code...",
-"Your next great collaboration waiting...",
+    "Finding developers who match your energy...",
+    "Analyzing skills, interests, and experience...",
+    "Matching you through real code...",
+    "Your next great collaboration waiting...",
 ];
 
 const [currentMessage, setCurrentMessage] = useState(0);
 
 useEffect(() => {
-const interval = setInterval(() => {
-setCurrentMessage((prev) => (prev + 1) % messages.length);
+    const interval = setInterval(() => {
+    setCurrentMessage((prev) => (prev + 1) % messages.length);
 }, 3000);
 
 
@@ -33,51 +33,41 @@ return () => clearInterval(interval);
 }, []);
 
 const fetchUser = async () => {
-try {
-const resData = await api.get("auth/me", {
-withCredentials: true,
-});
+    try {
+        const resData = await api.get("auth/me", {
+        withCredentials: true,
+    });
+    return resData.data.user ?? null;
 
-
-  return resData.data.user ?? null;
-} catch (err) {
-  return null;
-}
-
+    } catch (err) {
+        return null;
+    }
 
 };
 
 const logout = async () => {
-return await api.get("/auth/logout", {
-withCredentials: true,
-});
+    return await api.get("/auth/logout", {
+        withCredentials: true,
+    });
 };
 
-const {
-data: user,
-isLoading: userLoading,
-} = useQuery({
-queryKey: ["user"],
-queryFn: fetchUser,
-retry: false,
-staleTime: 0,
+const {data: user, isLoading: userLoading} = useQuery({
+    queryKey: ["user"],
+    queryFn: fetchUser,
+    retry: false,
+    staleTime: 0,
 });
 
-const {
-mutate: logoutUser,
-isPending: loggingOut,
-} = useMutation({
-mutationFn: logout,
-onSuccess: async () => {
-await refreshAuth();
+const {mutate: logoutUser, isPending: loggingOut} = useMutation({
+    mutationFn: logout,
 
+    onSuccess: async () => {    
+        await refreshAuth();
 
-  queryClient.invalidateQueries({
-    queryKey: ["user"],
-  });
-},
-
-
+        queryClient.invalidateQueries({
+            queryKey: ["user"],
+        });
+    }
 });
 
 if (userLoading) console.log("loading...");
