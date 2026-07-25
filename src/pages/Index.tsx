@@ -173,7 +173,7 @@ return ( <div className="min-h-screen bg-background">
           <br />
 
           <span className="gradient-text">
-            Coding Soulmate Bro
+            Coding Soulmate
           </span>
 
         </h1>
