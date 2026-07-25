@@ -1,13 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import {
-GitBranch,
-ArrowRight,
-Code2,
-Users,
-Zap,
-Shield,
-LayoutDashboard,
-} from "lucide-react";
+import {GitBranch, ArrowRight, Code2, Users, Zap, Shield, LayoutDashboard, } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -24,7 +16,7 @@ const messages = [
 "Finding developers who match your energy...",
 "Analyzing skills, interests, and experience...",
 "Matching you through real code...",
-"Your next great collaboration is waiting...",
+"Your next great collaboration waiting...",
 ];
 
 const [currentMessage, setCurrentMessage] = useState(0);
@@ -144,7 +136,7 @@ return ( <div className="min-h-screen bg-background">
 
 
   {/* Hero */}
-  <section className="pt-40 pb-20 px-4 min-h-screen flex items-center">
+  <section className="pt-40 max-sm:pt-32 pb-20 px-4 min-h-screen flex items-center">
 
     <div className="max-w-5xl mx-auto text-center w-full">
 
@@ -159,7 +151,7 @@ return ( <div className="min-h-screen bg-background">
 
           <Code2 className="w-4 h-4 text-primary" />
 
-          <span className="text-sm text-primary">
+          <span className="text-sm max-sm:text-xs text-primary">
             Developer Collaboration Platform
           </span>
 
@@ -167,7 +159,7 @@ return ( <div className="min-h-screen bg-background">
 
 
         {/* Heading */}
-        <h1 className="text-5xl sm:text-7xl font-bold text-foreground leading-tight mb-6">
+        <h1 className="text-5xl sm:text-7xl max-sm:text-5xl font-bold text-foreground leading-tight mb-6">
 
           Find Your
           <br />
@@ -180,7 +172,7 @@ return ( <div className="min-h-screen bg-background">
 
 
         {/* Description */}
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 max-sm:mb-8 max-sm:text-[16px]">
 
           Connect with developers using verified GitHub data.
           Match based on real code, not resumes.
@@ -192,7 +184,7 @@ return ( <div className="min-h-screen bg-background">
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
 
-          <Button size="xl" asChild>
+          <Button size="xl" asChild className="max-sm:text-sm text-[17px] px-10">
 
             {user ? (
 
@@ -206,7 +198,7 @@ return ( <div className="min-h-screen bg-background">
 
             ) : (
 
-              <Link to="/login">
+              <Link to="/login" className="max-sm:py-2 ">
 
                 Get Started
 
@@ -217,7 +209,7 @@ return ( <div className="min-h-screen bg-background">
           </Button>
 
 
-          <Button variant="outline" size="lg" asChild>
+          <Button variant="outline" size="xl" asChild className="text-sm sm:text-[17px">
 
             <Link to="/why-gitmate">
 
@@ -233,7 +225,7 @@ return ( <div className="min-h-screen bg-background">
 
 
         {/* Animated Status Message */}
-        <div className="mt-16 flex justify-center">
+        <div className="mt-16 max-sm:mt-6 flex justify-center">
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -275,7 +267,7 @@ return ( <div className="min-h-screen bg-background">
                 transition={{
                   duration: 0.3,
                 }}
-                className="text-sm text-muted-foreground"
+                className="text-sm text-muted-foreground truncate "
               >
 
                 {messages[currentMessage]}
