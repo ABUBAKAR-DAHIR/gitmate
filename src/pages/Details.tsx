@@ -41,10 +41,12 @@ export default function Details() {
 
             if (res.data.success) {
                 await refreshAuth();
+                toast.success("Profile created successfuly!")
                 navigate("/dashboard");
             }
             
         } catch (error: any) {
+            toast.error("An unexpected error ocurred!")
             console.error("Frontend fetch error: ", error.message)
         }
         finally{

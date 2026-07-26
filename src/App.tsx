@@ -33,7 +33,7 @@ import { ThemeProviderC } from "./providers/ThemeProviderC";
             <ThemeProviderC>
                 <TooltipProvider>
                     <Toaster />
-                    <Sonner />
+                    <Sonner closeButton position="top-right" toastOptions={{classNames: {info: "info", icon: "info-icon", closeButton: "info-close"}}}/>
                     <BrowserRouter>
                     <AuthProvider>
                         <Routes>
@@ -44,14 +44,14 @@ import { ThemeProviderC } from "./providers/ThemeProviderC";
 
                         <Route element={<ProtectedRoute />}>
                             <Route element={<GuardedRoutes />}>
-                            <Route path="/onboarding" element={<Onboarding />} />
-                            <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/feed" element={<Feed />} />
-                            <Route path="/chat" element={<Chat />} />
-                            <Route path="/profile" element={<Profile />} />
-                            <Route path="/projects" element={<Projects />} />
-                            <Route path="/settings" element={<Settings />} />
-                            <Route path="/matches" element={<Matches />} />
+                                <Route path="/onboarding" element={<Onboarding />} />
+                                <Route path="/dashboard" element={<Dashboard />} />
+                                <Route path="/feed" element={<Feed />} />
+                                <Route path="/chat" element={<Chat />} />
+                                <Route path="/profile" element={<Profile />} />
+                                <Route path="/projects" element={<Projects />} />
+                                <Route path="/settings" element={<Settings />} />
+                                <Route path="/matches" element={<Matches />} />
                             </Route>
 
                             <Route path="/details" element={<Details />} />

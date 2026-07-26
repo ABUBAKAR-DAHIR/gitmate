@@ -6,6 +6,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+import Themer from "@/components/Themer";
+import { useTheme } from "next-themes";
 
 const Index = () => {
 const queryClient = useQueryClient();
@@ -70,10 +73,38 @@ const {mutate: logoutUser, isPending: loggingOut} = useMutation({
     }
 });
 
+const {data: profile} = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+        try {
+            const resData = await api.get("/profile", {
+            withCredentials: true,
+        });
+        return resData.data ?? null;
+
+        } catch (err) {
+            return null;
+        }
+    }
+})
+
+let count = 0
+
+// useEffect(() => {
+//     setInterval(()=>{
+//         count++
+//         toast.info("Count is increased")
+//     }, 4000)
+// })
+
+const {resolvedTheme} = useTheme()
+console.log("Theme: ", resolvedTheme)
+
 if (userLoading) console.log("loading...");
 else if (loggingOut) console.log("logging out");
 else if (!user) console.log("not logged in");
 else console.log("logged in");
+console.log("Profile: ", profile)
 
 return ( <div className="min-h-screen bg-background">
 
@@ -95,14 +126,9 @@ return ( <div className="min-h-screen bg-background">
 
         <div className="flex items-center gap-4">
 
-          <Link
-            to="/why-gitmate"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Why Gitmate?
-          </Link>
 
           {isAuthenticated ? (
+            
             <Button
               variant="github"
               size="sm"
@@ -112,14 +138,24 @@ return ( <div className="min-h-screen bg-background">
               {loggingOut ? "Logging out..." : "Logout"}
             </Button>
           ) : (
-            <Button variant="github" size="sm" asChild>
-              <Link to="/login">
-                Sign in
-              </Link>
-            </Button>
+            <>
+                <Link
+                    to="/why-gitmate"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                    Why Gitmate?
+                </Link>
+                <Button variant="github" size="sm" asChild>
+                <Link to="/login">
+                    Sign in
+                </Link>
+                </Button>
+            </>
           )}
 
+        <Themer />
         </div>
+
       </div>
     </div>
   </nav>
@@ -466,7 +502,7 @@ return ( <div className="min-h-screen bg-background">
 
             <Button
               size="xl"
-              className="group"
+              className="group max-sm:text-[16.5px]"
               asChild
             >
 
@@ -503,6 +539,7 @@ return ( <div className="min-h-screen bg-background">
                 variant="outline"
                 size="lg"
                 asChild
+                className="max-sm:text-[16px]"
               >
 
                 <Link to="/why-gitmate">

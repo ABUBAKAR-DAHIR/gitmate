@@ -5,7 +5,12 @@ export function ThemeProviderC({
   ...props
 }: ThemeProviderProps) {
   return (
-    <NextThemesProvider {...props}>
+    <NextThemesProvider 
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        {...props} 
+    >
       {children}
     </NextThemesProvider>
   );

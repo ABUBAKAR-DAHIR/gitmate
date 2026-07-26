@@ -131,7 +131,7 @@ const Feed = () => {
                 <div className="absolute">
                   <DeveloperCard
                     developer={nextDeveloper}
-                    className="opacity-50 scale-95"
+                    className="opacity-10 scale-95"
                   />
                 </div>
               )}
