@@ -182,7 +182,7 @@ return (
                         size="sm"
                         onClick={() => logoutUser()}
                         disabled={loggingOut}
-                        className="w-full"
+                        className="w-full py-6"
                     >
                     {loggingOut ? "Logging out..." : "Logout"}
                     </Button>
@@ -194,14 +194,14 @@ return (
                         >
                             Why Gitmate?
                         </Link>
-                        <Button variant="github" asChild className="w-full">
+                        <Button variant="github" asChild className="w-full py-6">
                         <Link to="/login">
                             Sign in
                         </Link>
                         </Button>
                     </>
                 )}
-                <Themer className="w-full"/>
+                <Themer className="w-full py-6"/>
 
                 </div>
         </div>
