@@ -45,7 +45,7 @@ const Login = () => {
             <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center">
               <GitBranch className="w-5 h-5 text-primary" />
             </div>
-            <span className="text-xl font-semibold text-foreground">GitMate</span>
+            <span className="text-xl font-semibold text-foreground">Gitmate</span>
           </div>
 
           {/* Main content */}
@@ -112,11 +112,11 @@ const Login = () => {
             <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center">
               <GitBranch className="w-6 h-6 text-primary" />
             </div>
-            <span className="text-2xl font-semibold text-foreground">GitMate</span>
+            <span className="text-2xl font-semibold text-foreground">Gitmate</span>
           </div>
 
           <div className="text-center lg:text-left">
-            <h2 className="text-3xl font-bold text-foreground">Sign in to GitMate</h2>
+            <h2 className="text-3xl font-bold text-foreground">Sign in to Gitmate</h2>
             <p className="mt-2 text-muted-foreground">Let your code speak for you.</p>
           </div>
 
@@ -201,7 +201,7 @@ const Login = () => {
           {/* Explore link */}
           <div className="text-center pt-4">
             <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Learn more about GitMate →
+              Learn more about Gitmate →
             </Link>
           </div>
         </motion.div>

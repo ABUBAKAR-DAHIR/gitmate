@@ -9,6 +9,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import Themer from "@/components/Themer";
 import { useTheme } from "next-themes";
+import { X } from "@/components/animate-ui/icons/x";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { ChartNoAxesColumnDecreasing } from "@/components/animate-ui/icons/chart-no-axes-column-decreasing";
+import clsx from "clsx";
 
 const Index = () => {
 const queryClient = useQueryClient();
@@ -106,9 +110,10 @@ else if (!user) console.log("not logged in");
 else console.log("logged in");
 console.log("Profile: ", profile)
 
-return ( <div className="min-h-screen bg-background">
+const [open, setOpen] = useState<boolean>(false)
 
-
+return ( 
+<div className="min-h-screen bg-background">
   {/* Navbar */}
   <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -124,8 +129,8 @@ return ( <div className="min-h-screen bg-background">
           </span>
         </Link>
 
-        <div className="flex items-center gap-4">
-
+        {/* Dekstop devices */}
+        <div className="max-md:hidden flex items-center gap-4">
 
           {isAuthenticated ? (
             
@@ -153,7 +158,52 @@ return ( <div className="min-h-screen bg-background">
             </>
           )}
 
-        <Themer />
+            <Themer />
+        </div>
+
+        {/* Mobile devices */}
+        <div className={clsx("md:hidden px-4")}>
+        
+            <button onClick={() => setOpen((prev) => !prev)} className="text-sm">
+                <X animateOnHover className={clsx(open ? "visible" : "hidden")} size={20}/>
+                <ChartNoAxesColumnDecreasing animateOnHover className={clsx(open ? "hidden" : "visible")} size={20}/>
+            </button>
+
+            {/* // Or use with the AnimateIcon component
+            <AnimateIcon animateOnHover>
+            <X />
+            </AnimateIcon> */}
+            <div className={clsx(open ? "md:hidden fixed top-16 left-0 right-0 bottom-0 h-screen bg-blend-overlay z-99 bg-background flex flex-col items-center gap-4 w-full px-4" : "hidden")}>
+
+                {isAuthenticated ? (
+                    
+                    <Button
+                        variant="github"
+                        size="sm"
+                        onClick={() => logoutUser()}
+                        disabled={loggingOut}
+                        className="w-full"
+                    >
+                    {loggingOut ? "Logging out..." : "Logout"}
+                    </Button>
+                ) : (
+                    <>
+                        <Link
+                            to="/why-gitmate"
+                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                            Why Gitmate?
+                        </Link>
+                        <Button variant="github" asChild className="w-full">
+                        <Link to="/login">
+                            Sign in
+                        </Link>
+                        </Button>
+                    </>
+                )}
+                <Themer className="w-full"/>
+
+                </div>
         </div>
 
       </div>
@@ -162,7 +212,7 @@ return ( <div className="min-h-screen bg-background">
 
 
   {/* Hero */}
-  <section className="pt-40 max-sm:pt-32 pb-20 px-4 min-h-screen flex items-center">
+  <section className="pt-40 max-sm:pt-24 pb-20 px-4 min-h-screen flex items-center">
 
     <div className="max-w-5xl mx-auto text-center w-full">
 
@@ -185,7 +235,7 @@ return ( <div className="min-h-screen bg-background">
 
 
         {/* Heading */}
-        <h1 className="text-5xl sm:text-7xl max-sm:text-5xl font-bold text-foreground leading-tight mb-6">
+        <h1 className="text-4xl sm:text-7xl font-bold text-foreground leading-tight mb-6">
 
           Find Your
           <br />
@@ -198,7 +248,7 @@ return ( <div className="min-h-screen bg-background">
 
 
         {/* Description */}
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 max-sm:mb-8 max-sm:text-[16px]">
+        <p className="text-sm xl:text-[17px] text-muted-foreground max-w-2xl mx-auto mb-10 max-sm:mb-8 max-sm:text-[16px]">
 
           Connect with developers using verified Github data.
           Match based on real code, not resumes.
@@ -466,7 +516,7 @@ return ( <div className="min-h-screen bg-background">
 
             <Zap className="w-4 h-4 text-primary" />
 
-            <span className="text-sm text-primary">
+            <span className="text-xs sm:text-sm text-primary">
               Your next collaboration starts here
             </span>
 
@@ -474,7 +524,7 @@ return ( <div className="min-h-screen bg-background">
 
 
           {/* Heading */}
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
 
             Stop coding alone.
 
@@ -488,7 +538,7 @@ return ( <div className="min-h-screen bg-background">
 
 
           {/* Description */}
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+          <p className="text-[16px] sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
 
             Find developers who share your interests,
             complement your skills,
@@ -502,7 +552,7 @@ return ( <div className="min-h-screen bg-background">
 
             <Button
               size="xl"
-              className="group max-sm:text-[16.5px]"
+              className="group max-sm:text-[15px] w-fit"
               asChild
             >
 
@@ -539,7 +589,7 @@ return ( <div className="min-h-screen bg-background">
                 variant="outline"
                 size="lg"
                 asChild
-                className="max-sm:text-[16px]"
+                className="max-sm:text-[15px]"
               >
 
                 <Link to="/why-gitmate">
@@ -605,7 +655,7 @@ return ( <div className="min-h-screen bg-background">
         <GitBranch className="w-4 h-4 text-primary" />
 
         <span className="text-sm text-muted-foreground">
-          GitMate
+          Gitmate
         </span>
 
       </div>

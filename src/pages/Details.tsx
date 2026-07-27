@@ -61,7 +61,7 @@ export default function Details() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 gap-4 py-10">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 gap-4 py-10">
         <h2 className="text-3xl font-bold">
             Complete Your{" "}
             <span className="bg-gradient-to-r from-green-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
@@ -70,33 +70,34 @@ export default function Details() {
         </h2>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-2xl bg-[#0a0a0a] border border-gray-800 rounded-2xl p-8 space-y-6 shadow-2xl"
+        className="w-full max-w-2xl border rounded-2xl p-8 space-y-6 shadow-2xl"
       >
         {/* Heading */}
         <div className="text-center space-y-2">
-          <p className="text-gray-400 text-sm">
+          <p className=" text-sm">
             Help us find your perfect coding match
           </p>
         </div>
 
         {/* Input wrapper style */}
         {[
-          { label: "Bio", name: "bio", type: "textarea" },
+          { label: "Bio", name: "bio", type: "textarea", placeholder: "Frontend developer..." },
           { label: "Skills", name: "skills", placeholder: "React, Node..." },
           { label: "Goals", name: "goals", placeholder: "Build cool stuff..." },
           { label: "Availability", name: "availability", placeholder: "Weekends..." },
           { label: "Timezone", name: "timezone", placeholder: "Asia/Kolkata" },
         ].map((field) => (
           <div key={field.name}>
-            <label className="text-sm text-gray-400">{field.label}</label>
+            <label className="text-sm ">{field.label}</label>
 
             {field.type === "textarea" ? (
               <textarea
                 name={field.name}
                 value={(form as any)[field.name]}
                 onChange={handleChange}
+                placeholder={field.placeholder}
                 required
-                className="mt-2 w-full bg-black border border-gray-700 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400/50 transition"
+                className="mt-2 w-full border border-gray-700 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400/50 transition"
               />
             ) : (
               <input
@@ -106,7 +107,7 @@ export default function Details() {
                 onChange={handleChange}
                 placeholder={field.placeholder}
                 required
-                className="mt-2 w-full bg-black border border-gray-700 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400/50 transition"
+                className="mt-2 w-full border border-gray-700 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400/50 transition"
               />
             )}
           </div>
@@ -114,15 +115,15 @@ export default function Details() {
 
         {/* Experience */}
         <div>
-          <label className="text-sm text-gray-400">Experience</label>
+          <label className="text-sm">Experience</label>
           <select
             name="experience"
             value={form.experience}
             onChange={handleChange}
             required
-            className="mt-2 w-full bg-black border border-gray-700 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400/50"
+            className="mt-2 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400/50"
           >
-            <option value="BEGINNER">Beginner</option>
+            <option value="BEGINNER" className="rounded-md">Beginner</option>
             <option value="INTERMEDIATE">Intermediate</option>
             <option value="ADVANCED">Advanced</option>
           </select>
