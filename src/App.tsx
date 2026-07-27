@@ -33,7 +33,9 @@ import { ThemeProviderC } from "./providers/ThemeProviderC";
             <ThemeProviderC>
                 <TooltipProvider>
                     <Toaster />
-                    <Sonner closeButton position="top-right" toastOptions={{classNames: {info: "info", icon: "info-icon", closeButton: "info-close"}}}/>
+                    <Sonner closeButton position="top-right" toastOptions={
+                        {classNames: {info: "info", icon: "info-icon", closeButton: "info-close", error: "error", success: "success"}}
+                    }/>
                     <BrowserRouter>
                     <AuthProvider>
                         <Routes>

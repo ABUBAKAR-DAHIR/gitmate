@@ -164,7 +164,7 @@
   }
 
   .stat-card {
-    @apply bg-surface-elevated border border-border/50 rounded-xl p-6 transition-all duration-300 hover:border-primary/30 hover:glow-primary;
+    @apply bg-card border border-border/50 rounded-xl p-6 transition-all duration-300 hover:border-primary/30 hover:glow-primary;
   }
 
   .nav-link {
@@ -256,10 +256,26 @@
     @apply border-orange-400 border-2 bg-orange-400/30 
 }
 
-.info-icon {
+.info [data-icon] {
     @apply text-orange-600
 }
 
 .info-close {
     @apply bg-orange-400
+}
+
+.error {
+    @apply border-red-500 border-2 bg-red-400/40
+}
+
+.error [data-icon] {
+    @apply text-red-600
+}
+
+.success {
+    @apply border-green-400 border-2 bg-green-400/30 
+}
+
+.success [data-icon] {
+    @apply text-green-600
 }
