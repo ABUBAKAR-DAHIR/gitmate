@@ -11,10 +11,10 @@ interface AppLayoutProps {
   };
 }
 
-export const AppLayout = ({ children, showNavbar = true, user }: AppLayoutProps) => {
+export const AppLayout = ({ children, showNavbar = true }: AppLayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
-      {showNavbar && <Navbar user={user} />}
+      {showNavbar && <Navbar />}
       <main className={showNavbar ? "pt-16" : ""}>
         {children}
       </main>

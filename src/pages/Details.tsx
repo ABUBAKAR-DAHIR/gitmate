@@ -3,6 +3,7 @@ import api from "@/lib/axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { ThreeCircles } from "react-loader-spinner";
 
 export default function Details() {
     const navigate = useNavigate()
@@ -29,6 +30,8 @@ export default function Details() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    
+    const toastId = toast.loading("Submitting your profile");
 
     try {
         console.log(form)
@@ -41,7 +44,7 @@ export default function Details() {
 
             if (res.data.success) {
                 await refreshAuth();
-                toast.success("Profile created successfuly!")
+                toast.success("Profile created successfuly!",{id: toastId})
                 navigate("/dashboard");
             }
             
@@ -97,7 +100,7 @@ export default function Details() {
                 onChange={handleChange}
                 placeholder={field.placeholder}
                 required
-                className="mt-2 w-full border border-gray-700 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400/50 transition"
+                className="mt-2 w-full border border-gray-700 rounded-xl p-3 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 transition"
               />
             ) : (
               <input
@@ -107,7 +110,7 @@ export default function Details() {
                 onChange={handleChange}
                 placeholder={field.placeholder}
                 required
-                className="mt-2 w-full border border-gray-700 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400/50 transition"
+                className="mt-2 w-full border border-gray-700 rounded-xl p-2.5 sm:p-3 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 transition"
               />
             )}
           </div>
@@ -121,7 +124,7 @@ export default function Details() {
             value={form.experience}
             onChange={handleChange}
             required
-            className="mt-2 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400/50"
+            className="mt-2 w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50"
           >
             <option value="BEGINNER" className="rounded-md">Beginner</option>
             <option value="INTERMEDIATE">Intermediate</option>

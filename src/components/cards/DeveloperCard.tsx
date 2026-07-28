@@ -1,145 +1,219 @@
 import { motion } from "framer-motion";
-import { GitBranch, Star, Code2, MapPin, ExternalLink } from "lucide-react";
+import {
+  Clock,
+  Globe,
+  Target,
+  TrendingUp,
+  AlertCircle,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-interface Developer {
-  id: string;
+export interface Developer {
+  userId: string;
   name: string;
-  username: string;
-  avatar: string;
+  image: string;
   bio?: string;
-  location?: string;
-  topLanguages: string[];
-  repoCount: number;
-  stars: number;
-  interests: string[];
+  similarity: string;
+  timezone: string;
+  experience: string;
+  goals: string;
+  availability: string;
 }
 
 interface DeveloperCardProps {
-  developer: Developer;
+  developer?: Developer;
+  isLoading?: boolean;
+  error?: string;
   className?: string;
-  onSwipeLeft?: () => void;
-  onSwipeRight?: () => void;
   style?: React.CSSProperties;
 }
 
-const languageColors: Record<string, string> = {
-  TypeScript: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  JavaScript: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  Python: "bg-green-500/20 text-green-400 border-green-500/30",
-  Rust: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  Go: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-  Java: "bg-red-500/20 text-red-400 border-red-500/30",
-  "C++": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  Ruby: "bg-pink-500/20 text-pink-400 border-pink-500/30",
-  default: "bg-muted text-muted-foreground border-border",
+const experienceColor: Record<string, string> = {
+  BEGINNER: "bg-green-500/15 text-green-400 border-green-500/30",
+  INTERMEDIATE: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  ADVANCED: "bg-purple-500/15 text-purple-400 border-purple-500/30",
+  EXPERT: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
 
-export const DeveloperCard = ({ developer, className, style }: DeveloperCardProps) => {
+export function DeveloperCard({
+  developer,
+  isLoading = false,
+  error,
+  className,
+  style,
+}: DeveloperCardProps) {
+  if (isLoading) {
+    return (
+      <div
+        className={cn(
+          "w-full max-w-sm overflow-hidden rounded-3xl border bg-card shadow-xl",
+          className
+        )}
+        style={style}
+      >
+        {/* Banner */}
+        <Skeleton className="h-24 w-full rounded-none" />
+
+        <div className="px-6 pb-6">
+          {/* Avatar */}
+          <div className="-mt-12 flex justify-center">
+            <Skeleton className="h-24 w-24 rounded-full border-4 border-background" />
+          </div>
+
+          {/* Name */}
+          <div className="mt-4 flex flex-col items-center gap-3">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-5 w-24 rounded-full" />
+          </div>
+
+          {/* Bio */}
+          <div className="mt-6 space-y-2">
+            <Skeleton className="mx-auto h-4 w-full" />
+            <Skeleton className="mx-auto h-4 w-5/6" />
+            <Skeleton className="mx-auto h-4 w-3/4" />
+          </div>
+
+          {/* Info Rows */}
+          <div className="mt-8 space-y-4">
+            {[1, 2, 3, 4].map((item) => (
+              <div
+                key={item}
+                className="flex items-center justify-between"
+              >
+                <Skeleton className="h-5 w-28" />
+                <Skeleton className="h-5 w-24" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        className={cn(
+          "flex h-[500px] w-full max-w-sm flex-col items-center justify-center rounded-3xl border bg-card p-8 text-center shadow-xl",
+          className
+        )}
+        style={style}
+      >
+        <AlertCircle className="mb-4 h-12 w-12 text-destructive" />
+
+        <h2 className="text-lg font-semibold">
+          Unable to load profile
+        </h2>
+
+        <p className="mt-2 text-sm text-muted-foreground">
+          {error}
+        </p>
+      </div>
+    );
+  }
+
+  if (!developer) return null;
+
   return (
     <motion.div
+      whileHover={{ scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 250 }}
+      style={style}
       className={cn(
-        "w-full max-w-sm bg-card border border-border/50 rounded-2xl overflow-hidden shadow-glow",
+        "w-[400px] max-md:w-full overflow-hidden rounded-3xl border bg-card shadow-xl",
         className
       )}
-      style={style}
-      whileHover={{ scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      {/* Header with gradient */}
-      <div className="relative h-24 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent">
-        <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-      </div>
+      {/* Banner */}
+      <div className="h-24 bg-gradient-to-r from-primary via-primary/70 to-primary/20" />
 
-      {/* Profile Section */}
-      <div className="relative px-6 pb-6">
+      <div className="px-6 pb-6">
         {/* Avatar */}
-        <div className="absolute -top-12 left-6">
-          <Avatar className="h-24 w-24 border-4 border-card shadow-lg">
-            <AvatarImage src={developer.avatar} alt={developer.name} />
-            <AvatarFallback className="text-2xl bg-primary/10 text-primary">
+        <div className="-mt-12 flex justify-center">
+          <Avatar className="h-24 w-24 border-4 border-background shadow-lg">
+            <AvatarImage
+              src={developer.image}
+              alt={developer.name}
+            />
+            <AvatarFallback>
               {developer.name.charAt(0)}
             </AvatarFallback>
           </Avatar>
         </div>
 
-        {/* Info */}
-        <div className="pt-14">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="text-xl font-semibold text-foreground">{developer.name}</h3>
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <span className="text-sm">@{developer.username}</span>
-                <ExternalLink className="w-3 h-3" />
-              </div>
+        {/* Name */}
+        <div className="mt-4 text-center">
+          <h2 className="text-2xl font-bold">
+            {developer.name}
+          </h2>
+
+          <Badge className="mt-3 bg-primary text-primary-foreground">
+          {(parseFloat(developer.similarity) * 100).toFixed(2)}% Similarity          </Badge>
+        </div>
+
+        {/* Bio */}
+        {developer.bio && (
+          <p className="mt-5 text-center text-sm leading-6 text-muted-foreground">
+            {developer.bio}
+          </p>
+        )}
+
+        {/* Details */}
+        <div className="mt-8 space-y-4 rounded-xl border bg-muted/20 p-4">
+          <div className="flex items-center justify-between max-sm:text-sm gap-4">
+            <div className="flex items-center gap-2 font-medium">
+              <TrendingUp size={16} />
+              Experience
             </div>
+
+            <Badge
+              variant="outline"
+              className={
+                experienceColor[developer.experience] ??
+                "border-muted bg-muted text-muted-foreground max-sm:text-xs p-0"
+              }
+            >
+              {developer.experience}
+            </Badge>
           </div>
 
-          {developer.location && (
-            <div className="flex items-center gap-1 mt-2 text-sm text-muted-foreground">
-              <MapPin className="w-3 h-3" />
-              {developer.location}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 font-medium max-sm:text-sm">
+              <Clock size={16} />
+              Availability
             </div>
-          )}
 
-          {developer.bio && (
-            <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{developer.bio}</p>
-          )}
-
-          {/* Stats */}
-          <div className="flex items-center gap-4 mt-4">
-            <div className="flex items-center gap-1.5 text-sm">
-              <GitBranch className="w-4 h-4 text-primary" />
-              <span className="font-mono text-foreground">{developer.repoCount}</span>
-              <span className="text-muted-foreground">repos</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm">
-              <Star className="w-4 h-4 text-warning" />
-              <span className="font-mono text-foreground">{developer.stars}</span>
-              <span className="text-muted-foreground">stars</span>
-            </div>
+            <span className="text-sm text-muted-foreground max-sm:text-sm">
+              {developer.availability}
+            </span>
           </div>
 
-          {/* Languages */}
-          <div className="mt-4">
-            <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
-              <Code2 className="w-3 h-3" />
-              Top Languages
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 font-medium max-sm:text-sm">
+              <Globe size={16} />
+              Timezone
             </div>
-            <div className="flex flex-wrap gap-2">
-              {developer.topLanguages.slice(0, 4).map((lang) => (
-                <Badge
-                  key={lang}
-                  variant="outline"
-                  className={cn(
-                    "text-xs font-mono",
-                    languageColors[lang] || languageColors.default
-                  )}
-                >
-                  {lang}
-                </Badge>
-              ))}
-            </div>
+
+            <span className="text-sm capitalize text-muted-foreground max-sm:text-sm">
+              {developer.timezone.replace("/", " / ")}
+            </span>
           </div>
 
-          {/* Interests */}
-          <div className="mt-4">
-            <div className="text-xs text-muted-foreground mb-2">Interests</div>
-            <div className="flex flex-wrap gap-2">
-              {developer.interests.slice(0, 3).map((interest) => (
-                <span
-                  key={interest}
-                  className="px-2 py-1 text-xs bg-secondary rounded-md text-secondary-foreground"
-                >
-                  {interest}
-                </span>
-              ))}
+          <div className="flex items-start justify-between gap-3 max-sm:text-sm">
+            <div className="flex items-center gap-2 font-medium">
+              <Target size={16} />
+              Goal
             </div>
+
+            <span className="max-w-[160px] text-right text-sm text-muted-foreground">
+              {developer.goals}
+            </span>
           </div>
         </div>
       </div>
     </motion.div>
   );
-};
+}

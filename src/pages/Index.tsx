@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import {GitBranch, ArrowRight, Code2, Users, Zap, Shield, LayoutDashboard, } from "lucide-react";
+import {GitBranch, ArrowRight, Code2, Users, Zap, Shield, LayoutDashboard, Settings, BookOpen, Sparkles, Home, } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ import { X } from "@/components/animate-ui/icons/x";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { ChartNoAxesColumnDecreasing } from "@/components/animate-ui/icons/chart-no-axes-column-decreasing";
 import clsx from "clsx";
+import { SiGithub } from "react-icons/si";
 
 const Index = () => {
 const queryClient = useQueryClient();
@@ -162,49 +163,162 @@ return (
         </div>
 
         {/* Mobile devices */}
-        <div className={clsx("md:hidden px-4")}>
-        
-            <button onClick={() => setOpen((prev) => !prev)} className="text-sm">
-                <X animateOnHover className={clsx(open ? "visible" : "hidden")} size={20}/>
-                <ChartNoAxesColumnDecreasing animateOnHover className={clsx(open ? "hidden" : "visible")} size={20}/>
-            </button>
+<div className="md:hidden px-4">
+    <button
+        onClick={() => setOpen((prev) => !prev)}
+        className="text-sm"
+        aria-label="Toggle menu"
+    >
+        <X
+            animateOnHover
+            className={clsx(open ? "visible" : "hidden")}
+            size={20}
+        />
 
-            {/* // Or use with the AnimateIcon component
-            <AnimateIcon animateOnHover>
-            <X />
-            </AnimateIcon> */}
-            <div className={clsx(open ? "md:hidden fixed top-16 left-0 right-0 bottom-0 h-screen bg-blend-overlay z-99 bg-background flex flex-col items-center gap-4 w-full px-4" : "hidden")}>
+        <ChartNoAxesColumnDecreasing
+            animateOnHover
+            className={clsx(open ? "hidden" : "visible")}
+            size={20}
+        />
+    </button>
 
-                {isAuthenticated ? (
-                    
-                    <Button
-                        variant="github"
-                        size="sm"
-                        onClick={() => logoutUser()}
-                        disabled={loggingOut}
-                        className="w-full py-6"
-                    >
-                    {loggingOut ? "Logging out..." : "Logout"}
-                    </Button>
-                ) : (
-                    <>
-                        <Link
-                            to="/why-gitmate"
-                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            Why Gitmate?
-                        </Link>
-                        <Button variant="github" asChild className="w-full py-6">
-                        <Link to="/login">
-                            Sign in
-                        </Link>
-                        </Button>
-                    </>
-                )}
-                <Themer className="w-full py-6"/>
+    <div
+        className={clsx(
+            open
+                ? "fixed top-16 left-0 right-0 bottom-0 h-screen z-50 bg-background flex flex-col px-6 py-8"
+                : "hidden"
+        )}
+    >
+        {/* Menu Header */}
+        <div className="flex items-center justify-between mb-8">
+            <div>
+                <h2 className="text-lg font-semibold">
+                    {isAuthenticated ? "Welcome back 👋" : "Welcome to GitMate"}
+                </h2>
 
-                </div>
+                <p className="text-sm text-muted-foreground mt-1">
+                    {isAuthenticated
+                        ? "Manage your repositories and workflow."
+                        : "Your intelligent GitHub companion."}
+                </p>
+            </div>
         </div>
+
+        {/* Navigation */}
+        <nav className="flex flex-col gap-2">
+            <Link
+                to="/"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-muted transition-colors"
+            >
+                <Home size={18} />
+                Home
+            </Link>
+
+            <Link
+                to="/why-gitmate"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-muted transition-colors"
+            >
+                <Sparkles size={18} />
+                Why GitMate?
+            </Link>
+
+            {isAuthenticated && (
+                <>
+                    <Link
+                        to="/dashboard"
+                        onClick={() => setOpen(false)}
+                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-muted transition-colors"
+                    >
+                        <LayoutDashboard size={18} />
+                        Dashboard
+                    </Link>
+
+                    <Link
+                        to="/repositories"
+                        onClick={() => setOpen(false)}
+                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-muted transition-colors"
+                    >
+                        <GitBranch size={18} />
+                        Repositories
+                    </Link>
+                </>
+            )}
+        </nav>
+
+        {/* Divider */}
+        <div className="my-6 h-px bg-border" />
+
+        {/* Useful Links */}
+        <div className="flex flex-col gap-2">
+            <a
+                href="https://github.com"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-muted transition-colors"
+            >
+                <SiGithub size={18} />
+                GitHub
+            </a>
+
+            <Link
+                to="/docs"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-muted transition-colors"
+            >
+                <BookOpen size={18} />
+                Documentation
+            </Link>
+
+            <Link
+                to="/settings"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-muted transition-colors"
+            >
+                <Settings size={18} />
+                Settings
+            </Link>
+        </div>
+
+        {/* Bottom Actions */}
+        <div className="mt-auto flex flex-col gap-4">
+            <Themer className="w-full py-5" />
+
+            {isAuthenticated ? (
+                <Button
+                    variant="github"
+                    size="sm"
+                    onClick={() => {
+                        setOpen(false);
+                        logoutUser();
+                    }}
+                    disabled={loggingOut}
+                    className="w-full py-5"
+                >
+                    {loggingOut ? "Logging out..." : "Logout"}
+                </Button>
+            ) : (
+                <Button
+                    variant="github"
+                    asChild
+                    className="w-full py-6"
+                >
+                    <Link
+                        to="/login"
+                        onClick={() => setOpen(false)}
+                    >
+                        Sign in
+                    </Link>
+                </Button>
+            )}
+
+            <p className="text-center text-xs text-muted-foreground">
+                Built for developers who ship faster.
+            </p>
+        </div>
+    </div>
+</div>
 
       </div>
     </div>

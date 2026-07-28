@@ -57,7 +57,7 @@
     --muted-foreground: 220 10% 45%;
 
     /* Purple accent */
-    --accent: 270 85% 62%;
+    --accent: 270 25% 42%;
     --accent-foreground: 0 0% 100%;
 
     /* Status */
@@ -72,7 +72,7 @@
 
     /* Custom GitMate tokens */
     --glow-primary: 160 100% 50%;
-    --glow-accent: 280 100% 65%;
+    --glow-accent: 280 100% 25%;
     --surface: 220 18% 6%;
     --surface-elevated: 220 18% 10%;
     --surface-hover: 220 15% 12%;
@@ -99,7 +99,7 @@
     --secondary-foreground: 210 40% 98%;
     --muted: 220 15% 18%;
     --muted-foreground: 215 20% 55%;
-    --accent: 280 100% 65%;
+    --accent: 280 100% 25%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
@@ -253,7 +253,7 @@
 
 
 .info {
-    @apply border-orange-400 border-2 bg-orange-400/30 max-sm:backdrop-blur-xl
+    @apply border-orange-400 border-2 bg-orange-400/30 backdrop-blur-xl
 }
 
 .info [data-icon] {
@@ -265,7 +265,7 @@
 }
 
 .error {
-    @apply border-red-500 border-2 bg-red-400/40 max-sm:backdrop-blur-xl
+    @apply border-red-500 border-2 bg-red-400/40 backdrop-blur-xl
 }
 
 .error [data-icon] {
@@ -273,9 +273,17 @@
 }
 
 .success {
-    @apply border-green-400 border-2 bg-green-400/30 max-sm:backdrop-blur-xl
+    @apply border-green-400 border-2 bg-green-400/30  backdrop-blur-xl
 }
 
 .success [data-icon] {
     @apply text-green-600
+}
+
+.loading {
+    @apply border border-border bg-card/95 backdrop-blur-xl;
+}
+
+.loading [data-icon] {
+    @apply text-primary;
 }

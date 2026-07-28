@@ -24,6 +24,8 @@
     import GuardedRoutes from "./components/GuardedRoutes";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProviderC } from "./providers/ThemeProviderC";
+import { ThreeCircles } from "react-loader-spinner";
+import { DeveloperCard } from "./components/cards/DeveloperCard";
 
     const queryClient = new QueryClient();
 
@@ -34,8 +36,10 @@ import { ThemeProviderC } from "./providers/ThemeProviderC";
                 <TooltipProvider>
                     <Toaster />
                     <Sonner closeButton position="top-right" toastOptions={
-                        {classNames: {info: "info", icon: "info-icon", closeButton: "info-close", error: "error", success: "success"}}
-                    }/>
+                        {classNames: {info: "info", icon: "info-icon", closeButton: "info-close", error: "error", success: "success", loading: "loading"}}
+                    } icons={{
+                        loading: <ThreeCircles height={16} width={16} color="#009e86"/>
+                    }}/>
                     <BrowserRouter>
                     <AuthProvider>
                         <Routes>
