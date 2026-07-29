@@ -49,7 +49,7 @@ export function DeveloperCard({
     return (
       <div
         className={cn(
-          "w-full max-w-sm overflow-hidden rounded-3xl border bg-card shadow-xl",
+          "w-full max-w-sm overflow-hidden rounded-3xl border bg-card shadow-xl opacity-0",
           className
         )}
         style={style}
@@ -120,7 +120,7 @@ export function DeveloperCard({
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 250 }}
+      transition={{ type: "spring", stiffness: 250, duration: 500 }}
       style={style}
       className={cn(
         "w-[400px] max-md:w-full overflow-hidden rounded-3xl border bg-card shadow-xl",
