@@ -40,7 +40,7 @@ const experienceColor: Record<string, string> = {
 
 export function DeveloperCard({
   developer,
-  isLoading = false,
+  isLoading,
   error,
   className,
   style,
@@ -49,7 +49,7 @@ export function DeveloperCard({
     return (
       <div
         className={cn(
-          "w-full max-w-sm overflow-hidden rounded-3xl border bg-card shadow-xl opacity-0",
+          "w-full max-w-sm overflow-hidden rounded-3xl border bg-card shadow-xl",
           className
         )}
         style={style}

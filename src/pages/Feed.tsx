@@ -42,7 +42,7 @@ const Feed = () => {
 
   const {
     data: developers = [],
-    isLoading,
+    isLoading: developersLoading,
     isError,
     error,
   } = useQuery({
@@ -164,7 +164,7 @@ const Feed = () => {
     });
   };
 
-  if (isLoading) {
+  if (developersLoading) {
     return (
       <AppLayout>
         <div className="mx-auto max-w-7xl px-4 py-10">
@@ -265,6 +265,7 @@ const Feed = () => {
                   <DeveloperCard
                     developer={nextDeveloper}
                     className="scale-95 opacity-0 blur-[1px]"
+                    isLoading = {developersLoading}
                   />
                 </div>
               )}
