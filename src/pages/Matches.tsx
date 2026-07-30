@@ -1,160 +1,506 @@
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { MessageSquare, GitBranch, Star, Search } from "lucide-react";
+import { MessageSquare, Search, Users } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Link } from "react-router-dom";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import api from "@/lib/axios";
 
-const mockUser = {
-  name: "Developer",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=developer",
-  username: "developer",
+interface MatchProfile {
+  id: string;
+  bio: string | null;
+  experience: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  skills: string;
+  goals: string;
+  availability: string;
+  timezone: string;
+}
+
+interface MatchedUser {
+  id: string;
+  name: string;
+  image: string | null;
+  profile: MatchProfile | null;
+}
+
+interface Match {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  user: MatchedUser;
+}
+
+interface MatchesResponse {
+  success: boolean;
+  count: number;
+  data: Match[];
+}
+
+const getInitials = (name: string) => {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 };
 
-const mockMatches = [
-  {
-    id: "1",
-    name: "Sarah Chen",
-    username: "sarahc",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah",
-    topLanguages: ["TypeScript", "Python"],
-    repoCount: 67,
-    stars: 234,
-    matchedAt: "2 hours ago",
-    commonInterests: ["Open Source", "Web3"],
-  },
-  {
-    id: "2",
-    name: "Alex Kim",
-    username: "alexk",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex",
-    topLanguages: ["Go", "Rust"],
-    repoCount: 45,
-    stars: 178,
-    matchedAt: "1 day ago",
-    commonInterests: ["Distributed Systems", "DevOps"],
-  },
-  {
-    id: "3",
-    name: "Jordan Lee",
-    username: "jordanl",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=jordan",
-    topLanguages: ["Python", "C++"],
-    repoCount: 32,
-    stars: 512,
-    matchedAt: "3 days ago",
-    commonInterests: ["Machine Learning", "NLP"],
-  },
-  {
-    id: "4",
-    name: "Taylor Morgan",
-    username: "taylorm",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=taylor",
-    topLanguages: ["TypeScript", "JavaScript"],
-    repoCount: 89,
-    stars: 156,
-    matchedAt: "1 week ago",
-    commonInterests: ["UI/UX", "Design Systems"],
-  },
-];
+const formatMatchedDate = (date: string) => {
+  const matchDate = new Date(date);
+  const now = new Date();
+
+  const differenceInMilliseconds =
+    now.getTime() - matchDate.getTime();
+
+  const differenceInMinutes = Math.floor(
+    differenceInMilliseconds / (1000 * 60),
+  );
+
+  const differenceInHours = Math.floor(
+    differenceInMilliseconds / (1000 * 60 * 60),
+  );
+
+  const differenceInDays = Math.floor(
+    differenceInMilliseconds /
+      (1000 * 60 * 60 * 24),
+  );
+
+  if (differenceInMinutes < 1) {
+    return "Just now";
+  }
+
+  if (differenceInMinutes < 60) {
+    return `${differenceInMinutes}m ago`;
+  }
+
+  if (differenceInHours < 24) {
+    return `${differenceInHours}h ago`;
+  }
+
+  if (differenceInDays < 7) {
+    return `${differenceInDays}d ago`;
+  }
+
+  if (differenceInDays < 14) {
+    return "1 week ago";
+  }
+
+  return matchDate.toLocaleDateString();
+};
+
+const getSkills = (skills: string | null | undefined) => {
+  if (!skills) {
+    return [];
+  }
+
+  return skills
+    .split(",")
+    .map((skill) => skill.trim())
+    .filter(Boolean)
+    .slice(0, 4);
+};
 
 const Matches = () => {
+  const [search, setSearch] = useState("");
+
+  const {
+    data,
+    isLoading,
+    isError,
+  } = useQuery<MatchesResponse>({
+    queryKey: ["matches"],
+    queryFn: async () => {
+      const response = await api.get<MatchesResponse>(
+        "/matches",
+      );
+
+      return response.data;
+    },
+  });
+
+  const matches = data?.data ?? [];
+
+  const filteredMatches = useMemo(() => {
+    const searchValue = search
+      .trim()
+      .toLowerCase();
+
+    if (!searchValue) {
+      return matches;
+    }
+
+    return matches.filter((match) => {
+      const user = match.user;
+
+      const searchableText = [
+        user.name,
+        user.profile?.bio,
+        user.profile?.skills,
+        user.profile?.goals,
+        user.profile?.experience,
+        user.profile?.timezone,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return searchableText.includes(
+        searchValue,
+      );
+    });
+  }, [matches, search]);
+
   return (
-    <AppLayout user={mockUser}>
+    <AppLayout>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"
         >
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Your Matches</h1>
-            <p className="text-muted-foreground mt-1">{mockMatches.length} developers want to collaborate with you</p>
+            <h1 className="text-3xl font-bold text-foreground">
+              Your Matches
+            </h1>
+
+            <p className="text-muted-foreground mt-1">
+              {isLoading
+                ? "Loading your matches..."
+                : `${matches.length} ${
+                    matches.length === 1
+                      ? "developer"
+                      : "developers"
+                  } want to collaborate with you`}
+            </p>
           </div>
         </motion.div>
 
         {/* Search */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.1,
+          }}
           className="mb-6"
         >
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+
             <Input
+              value={search}
+              onChange={(event) =>
+                setSearch(event.target.value)
+              }
               placeholder="Search matches..."
               className="pl-9 bg-card border-border/50"
             />
           </div>
         </motion.div>
 
-        {/* Matches Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {mockMatches.map((match, index) => (
-            <motion.div
-              key={match.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * (index + 1) }}
-              className="bg-card border border-border/50 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 group"
-            >
-              <div className="flex items-start gap-4">
-                <Avatar className="w-16 h-16 border-2 border-border">
-                  <AvatarImage src={match.avatar} alt={match.name} />
-                  <AvatarFallback>{match.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-foreground">{match.name}</h3>
-                      <p className="text-sm text-muted-foreground">@{match.username}</p>
+        {/* Loading */}
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Array.from({
+              length: 4,
+            }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-card border border-border/50 rounded-2xl p-6 animate-pulse"
+              >
+                <div className="flex gap-4">
+                  <div className="w-16 h-16 rounded-full bg-muted" />
+
+                  <div className="flex-1 space-y-3">
+                    <div className="h-4 w-1/2 rounded bg-muted" />
+
+                    <div className="h-3 w-1/3 rounded bg-muted" />
+
+                    <div className="h-3 w-full rounded bg-muted" />
+
+                    <div className="flex gap-2">
+                      <div className="h-6 w-20 rounded bg-muted" />
+
+                      <div className="h-6 w-20 rounded bg-muted" />
                     </div>
-                    <span className="text-xs text-muted-foreground">{match.matchedAt}</span>
-                  </div>
-
-                  <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <GitBranch className="w-3 h-3" /> {match.repoCount} repos
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Star className="w-3 h-3" /> {match.stars} stars
-                    </span>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {match.topLanguages.map((lang) => (
-                      <Badge key={lang} variant="outline" className="text-xs font-mono">
-                        {lang}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center gap-2 mt-4">
-                    <span className="text-xs text-muted-foreground">Common:</span>
-                    {match.commonInterests.map((interest) => (
-                      <span key={interest} className="text-xs text-primary">{interest}</span>
-                    ))}
                   </div>
                 </div>
+
+                <div className="grid grid-cols-2 gap-3 mt-6 pt-4 border-t border-border/50">
+                  <div className="h-9 rounded bg-muted" />
+
+                  <div className="h-9 rounded bg-muted" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Error */}
+        {isError && (
+          <div className="bg-card border border-destructive/30 rounded-2xl p-8 text-center">
+            <h2 className="font-semibold text-foreground">
+              Unable to load matches
+            </h2>
+
+            <p className="text-sm text-muted-foreground mt-2">
+              Something went wrong while fetching your
+              matches. Please try again.
+            </p>
+          </div>
+        )}
+
+        {/* Empty matches */}
+        {!isLoading &&
+          !isError &&
+          matches.length === 0 && (
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              className="bg-card border border-border/50 rounded-2xl p-10 text-center"
+            >
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Users className="w-6 h-6 text-primary" />
               </div>
 
-              <div className="flex gap-3 mt-4 pt-4 border-t border-border/50">
-                <Button variant="outline" size="sm" className="flex-1" asChild>
-                  <Link to={`/profile/${match.id}`}>View Profile</Link>
-                </Button>
-                <Button size="sm" className="flex-1" asChild>
-                  <Link to="/chat">
-                    <MessageSquare className="w-4 h-4 mr-2" /> Message
-                  </Link>
-                </Button>
-              </div>
+              <h2 className="text-lg font-semibold text-foreground mt-5">
+                No matches yet
+              </h2>
+
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-2">
+                Explore recommended developers and
+                create your first collaboration match.
+              </p>
+
+              <Button
+                className="mt-6"
+                asChild
+              >
+                <Link to="/discover">
+                  Discover Developers
+                </Link>
+              </Button>
             </motion.div>
-          ))}
-        </div>
+          )}
+
+        {/* No search results */}
+        {!isLoading &&
+          !isError &&
+          matches.length > 0 &&
+          filteredMatches.length === 0 && (
+            <div className="bg-card border border-border/50 rounded-2xl p-10 text-center">
+              <h2 className="font-semibold text-foreground">
+                No matches found
+              </h2>
+
+              <p className="text-sm text-muted-foreground mt-2">
+                No developers match “{search}”.
+              </p>
+
+              <Button
+                variant="outline"
+                className="mt-5"
+                onClick={() =>
+                  setSearch("")
+                }
+              >
+                Clear Search
+              </Button>
+            </div>
+          )}
+
+        {/* Matches Grid */}
+        {!isLoading &&
+          !isError &&
+          filteredMatches.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredMatches.map(
+                (match, index) => {
+                  const profile =
+                    match.user.profile;
+
+                  const skills = getSkills(
+                    profile?.skills,
+                  );
+
+                  return (
+                    <motion.div
+                      key={match.id}
+                      initial={{
+                        opacity: 0,
+                        y: 20,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        delay:
+                          0.1 *
+                          (index + 1),
+                      }}
+                      className="bg-card border border-border/50 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 group"
+                    >
+                      <div className="flex items-start gap-4">
+                        <Avatar className="w-16 h-16 border-2 border-border">
+                          <AvatarImage
+                            src={
+                              match.user
+                                .image ??
+                              undefined
+                            }
+                            alt={
+                              match.user
+                                .name
+                            }
+                          />
+
+                          <AvatarFallback>
+                            {getInitials(
+                              match.user
+                                .name,
+                            )}
+                          </AvatarFallback>
+                        </Avatar>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <h3 className="font-semibold text-foreground truncate">
+                                {
+                                  match.user
+                                    .name
+                                }
+                              </h3>
+
+                              <p className="text-sm text-muted-foreground">
+                                {
+                                  profile?.experience ??
+                                  "Developer"
+                                }
+                              </p>
+                            </div>
+
+                            <span className="text-xs text-muted-foreground whitespace-nowrap">
+                              {formatMatchedDate(
+                                match.createdAt,
+                              )}
+                            </span>
+                          </div>
+
+                          {profile?.bio && (
+                            <p className="text-sm text-muted-foreground mt-3 line-clamp-2">
+                              {
+                                profile.bio
+                              }
+                            </p>
+                          )}
+
+                          {skills.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mt-3">
+                              {skills.map(
+                                (
+                                  skill,
+                                ) => (
+                                  <Badge
+                                    key={
+                                      skill
+                                    }
+                                    variant="outline"
+                                    className="text-xs font-mono"
+                                  >
+                                    {
+                                      skill
+                                    }
+                                  </Badge>
+                                ),
+                              )}
+                            </div>
+                          )}
+
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-4">
+                            {profile?.goals && (
+                              <span className="text-xs text-muted-foreground">
+                                <span className="text-primary">
+                                  Goal:
+                                </span>{" "}
+                                {
+                                  profile.goals
+                                }
+                              </span>
+                            )}
+
+                            {profile?.availability && (
+                              <span className="text-xs text-muted-foreground">
+                                {
+                                  profile.availability
+                                }
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3 mt-4 pt-4 border-t border-border/50">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1"
+                          asChild
+                        >
+                          <Link
+                            to={`/profile/${match.user.id}`}
+                          >
+                            View Profile
+                          </Link>
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          className="flex-1"
+                          asChild
+                        >
+                          <Link
+                            to={`/chat/${match.user.id}`}
+                          >
+                            <MessageSquare className="w-4 h-4 mr-2" />
+                            Message
+                          </Link>
+                        </Button>
+                      </div>
+                    </motion.div>
+                  );
+                },
+              )}
+            </div>
+          )}
       </div>
     </AppLayout>
   );
