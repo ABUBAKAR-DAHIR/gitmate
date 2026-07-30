@@ -12,6 +12,7 @@ import {
   RotateCcw,
   Loader2,
   AlertCircle,
+  LayoutDashboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -48,11 +49,20 @@ const Feed = () => {
   } = useQuery({
     queryKey: ["similar-profiles"],
     queryFn: async () => {
-      const { data } = await api.get("/profile/similar");
+      const { data } = await api.get("/recommendations");
       return data;
     },
   });
+  
+//   const { data: recommendations = [], isLoading: recommendationsLoading, isError: recError, error: recERR, } = useQuery({
+//     queryKey: ["similars"],
+//     queryFn: async () => {
+//       const { data } = await api.get("/recommendations");
+//       return data;
+//     },
+//   });
 
+//   console.log("RECOMMENDATIONS: ", recommendations)
   const currentDeveloper = developers[currentIndex];
   const nextDeveloper = developers[currentIndex + 1];
 
@@ -247,16 +257,27 @@ const Feed = () => {
                 profiles become available.
               </p>
 
-              <Button
-                onClick={() => {
-                  setCurrentIndex(0);
-                  setDirection(null);
-                  x.set(0);
-                }}
-              >
-                <RotateCcw className="mr-2 h-4 w-4" />
-                Start Again
-              </Button>
+              <div className="flex gap-4">
+                <Button
+                    onClick={() => {
+                        navigate("/dashboard")
+                    }}
+                >
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                </Button>
+                <Button
+                    onClick={() => {
+                    setCurrentIndex(0);
+                    setDirection(null);
+                    x.set(0);
+                    }}
+                >
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    Start Again
+                </Button>
+
+              </div>
             </motion.div>
           ) : (
             <>

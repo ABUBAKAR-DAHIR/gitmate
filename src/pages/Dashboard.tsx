@@ -268,13 +268,13 @@ const Dashboard = () => {
             transition={{ delay: 0.4 }}
             className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4"
             >
-            <Link to="/projects" className="group">
+            {/* <Link to="/projects" className="group">
                 <div className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/30 transition-all duration-300 group-hover:shadow-glow">
                 <FolderKanban className="w-6 h-6 text-primary mb-3" />
                 <h4 className="font-medium text-foreground">Create Project</h4>
                 <p className="text-sm text-muted-foreground">Start a new project and find collaborators</p>
                 </div>
-            </Link>
+            </Link> */}
             <Link to="/profile" className="group">
                 <div className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/30 transition-all duration-300 group-hover:shadow-glow">
                 <Users className="w-6 h-6 text-accent mb-3" />
