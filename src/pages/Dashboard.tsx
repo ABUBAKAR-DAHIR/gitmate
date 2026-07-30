@@ -8,19 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axios";
 import { Skeleton } from "@/components/ui/skeleton";
 
-
-const mockUser = {
-  name: "Developer",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=developer",
-  username: "developer",
-};
-
-const recentMatches = [
-  { id: "1", name: "Sarah Chen", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah", role: "Full Stack" },
-  { id: "2", name: "Alex Kim", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex", role: "Backend" },
-  { id: "3", name: "Jordan Lee", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=jordan", role: "ML Engineer" },
-];
-
 const Dashboard = () => {
     const {data: profile, isLoading: profileLoading, error: profileError} = useQuery({
         queryKey: ["profile"],
@@ -36,11 +23,58 @@ const Dashboard = () => {
             }
         }
     })
-
+    
+    const {data: matches, isLoading: matchesLoading, error: matchesError} = useQuery({
+        queryKey: ["matches"],
+        queryFn: async () => {
+            try {
+                const resData = await api.get("/matches", {
+                withCredentials: true,
+            });
+            return resData.data ?? null;
+    
+            } catch (err) {
+                return null;
+            }
+        }
+    })
+    
+    const {data: recentMatches, isLoading: recentMatchesLoading, error: recentMatchesError} = useQuery({
+        queryKey: ["recent-matches"],
+        queryFn: async () => {
+            try {
+                const resData = await api.get("/matches/recent", {
+                withCredentials: true,
+            });
+            return resData.data ?? null;
+    
+            } catch (err) {
+                return null;
+            }
+        }
+    })
+    
+    const {data: similarProfiles, isLoading: similarProfilesLoading, error: similarProfilesError} = useQuery({
+        queryKey: ["similar-profiles"],
+        queryFn: async () => {
+            try {
+                const resData = await api.get("/profile/similar", {
+                withCredentials: true,
+            });
+            return resData.data ?? null;
+    
+            } catch (err) {
+                return null;
+            }
+        }
+    })
     console.log("Profile", profile)
+    console.log("matches", matches)
+    console.log("recentMatches", recentMatches)
+    console.log("similarProfiles", similarProfiles)
     
     return (
-        <AppLayout user={mockUser}>
+        <AppLayout >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Header */}
             <motion.div
@@ -69,28 +103,28 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatCard
                 title="Total Matches"
-                value={23}
+                value={matches?.data?.length}
                 icon={Users}
-                trend={{ value: 12, positive: true }}
+                isLoading = {matchesLoading}
             />
 
             <StatCard
-                title="Active Chats"
-                value={7}
+                title="Recent Matches"
+                value={recentMatches?.data?.length}
                 icon={MessageSquare}
-                subtitle="3 unread"
+                isLoading = {recentMatchesLoading}
             />
             <StatCard
-                title="Projects"
-                value={4}
+                title="Similar Profiles"
+                value={similarProfiles?.length}
                 icon={FolderKanban}
-                subtitle="2 in progress"
+                isLoading = {similarProfilesLoading}
             />
-            <StatCard
-                title="Profile Views"
-                value={156}
+           <StatCard
+                title="New Opportunities"
+                value="∞"
+                subtitle="Keep exploring profiles"
                 icon={Zap}
-                trend={{ value: 24, positive: true }}
             />
             </div>
 
@@ -121,36 +155,111 @@ const Dashboard = () => {
 
             {/* Recent Matches */}
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
             >
-                <div className="bg-card border border-border/50 rounded-2xl p-6">
+            <div className="bg-card border border-border/50 rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-foreground">Recent Matches</h3>
-                    <Link to="/matches" className="text-sm text-primary hover:underline">View all</Link>
+                <h3 className="font-semibold text-foreground">Recent Matches</h3>
+
+                <Link
+                    to="/matches"
+                    className="text-sm text-primary hover:underline"
+                >
+                    View all
+                </Link>
                 </div>
+
                 <div className="space-y-4">
-                    {recentMatches.map((match) => (
-                    <div key={match.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-secondary/50 transition-colors cursor-pointer">
-                        <img
-                        src={match.avatar}
-                        alt={match.name}
-                        className="w-10 h-10 rounded-full border border-border"
-                        />
-                        <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{match.name}</p>
-                        <p className="text-xs text-muted-foreground">{match.role}</p>
+                {/* Loading */}
+                {recentMatchesLoading &&
+                    Array.from({ length: 3 }).map((_, index) => (
+                    <div
+                        key={index}
+                        className="flex items-center gap-3 p-3"
+                    >
+                        <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+
+                        <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-28" />
+                        <Skeleton className="h-3 w-full max-w-40" />
                         </div>
-                        <Button variant="ghost" size="sm">
+
+                        <Skeleton className="w-9 h-9 rounded-md" />
+                    </div>
+                    ))}
+
+                {/* Error */}
+                {!recentMatchesLoading && recentMatchesError && (
+                    <div className="flex min-h-40 flex-col items-center justify-center rounded-xl border border-destructive/20 bg-destructive/5 px-4 text-center">
+                    <p className="text-sm font-medium text-destructive">
+                        Failed to load recent matches
+                    </p>
+
+                    <p className="mt-1 text-xs text-muted-foreground">
+                        Please try refreshing the page.
+                    </p>
+                    </div>
+                )}
+
+                {/* Empty */}
+                {!recentMatchesLoading &&
+                    !recentMatchesError &&
+                    (!recentMatches?.data ||
+                    recentMatches.data.length === 0) && (
+                    <div className="flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed border-border px-4 text-center">
+                        <Users className="w-8 h-8 text-muted-foreground/50" />
+
+                        <p className="mt-3 text-sm font-medium text-foreground">
+                        No Recent Matches
+                        </p>
+
+                        <p className="mt-1 text-xs text-muted-foreground">
+                        Your recent matches will appear here.
+                        </p>
+                    </div>
+                    )}
+
+                {/* Data */}
+                {!recentMatchesLoading &&
+                    !recentMatchesError &&
+                    recentMatches?.data?.length > 0 &&
+                    recentMatches.data.map((match) => (
+                    <div
+                        key={match?.user?.userId}
+                        className="flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-secondary/50"
+                    >
+                        <img
+                        src={match?.user?.image}
+                        alt={match?.user?.name ?? "Matched user"}
+                        className="w-10 h-10 rounded-full border border-border object-cover"
+                        />
+
+                        <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">
+                            {match?.user?.name ?? "Unknown User"}
+                        </p>
+
+                        <p className="text-xs text-muted-foreground truncate">
+                            {match?.user?.profile?.bio ??
+                            "No bio available"}
+                        </p>
+                        </div>
+
+                        <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0"
+                        >
                         <MessageSquare className="w-4 h-4" />
                         </Button>
                     </div>
                     ))}
                 </div>
-                </div>
-            </motion.div>
             </div>
+            </motion.div>
+        </div>
 
             {/* Quick Actions */}
             <motion.div
