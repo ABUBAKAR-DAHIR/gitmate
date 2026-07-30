@@ -6,6 +6,7 @@ import {
   FolderKanban,
   Settings,
   LogOut,
+  LayoutDashboard,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -62,6 +63,11 @@ interface ProfileResponse {
 
 const navItems: NavItem[] = [
   {
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: <LayoutDashboard className="h-4 w-4" />,
+  },
+  {
     label: "Feed",
     href: "/feed",
     icon: <Users className="h-4 w-4" />,
@@ -71,20 +77,21 @@ const navItems: NavItem[] = [
     href: "/matches",
     icon: <GitBranch className="h-4 w-4" />,
   },
-  {
-    label: "Chat",
-    href: "/chat",
-    icon: <MessageSquare className="h-4 w-4" />,
-  },
-  {
-    label: "Projects",
-    href: "/projects",
-    icon: <FolderKanban className="h-4 w-4" />,
-  },
+//   {
+//     label: "Chat",
+//     href: "/chat",
+//     icon: <MessageSquare className="h-4 w-4" />,
+//   },
+//   {
+//     label: "Projects",
+//     href: "/projects",
+//     icon: <FolderKanban className="h-4 w-4" />,
+//   },
 ];
 
 export const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate()
 
   const {
     data,
@@ -123,7 +130,6 @@ export const Navbar = () => {
     };
 
     const toastId = useRef<string | number | undefined>(undefined);
-    const navigate = useNavigate()
 
     const {mutate: logoutUser, isPending: loggingOut, isSuccess, } = useMutation({
         mutationFn: logout,
@@ -162,7 +168,7 @@ export const Navbar = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link
-            to="/feed"
+            to="/"
             className="group flex items-center gap-2"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-primary/30 bg-primary/10 transition-shadow duration-300 group-hover:shadow-glow">
@@ -170,7 +176,7 @@ export const Navbar = () => {
             </div>
 
             <span className="text-lg font-semibold text-foreground">
-              GitMate
+              Gitmate
             </span>
           </Link>
 
