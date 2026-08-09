@@ -11,7 +11,7 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import api from "@/lib/axios";
@@ -28,7 +28,7 @@ import { Progress } from "@/components/ui/progress";
 interface User {
   id: string;
   name: string;
-  email: string;
+  email?: string;
   image: string | null;
   provider?: string;
   createdAt: string;
@@ -47,13 +47,6 @@ interface ProfileData {
   updatedAt?: string;
 }
 
-interface ProfileResponse {
-  success: boolean;
-  message: string;
-  profile: ProfileData;
-  user: User;
-}
-
 interface GithubProject {
   id: string;
   name: string;
@@ -61,16 +54,6 @@ interface GithubProject {
   htmlUrl: string;
   stars: number;
   language: string | null;
-}
-
-interface GithubProjectsResponse {
-  success: boolean;
-  synced: boolean;
-  projects: GithubProject[];
-  stats: {
-    commits: number;
-    contributions: number;
-  };
 }
 
 const API_URL = import.meta.env.VITE_BASE_API_URL;
@@ -83,7 +66,9 @@ const getInitials = (name: string) =>
     .slice(0, 2)
     .toUpperCase();
 
-const parseItems = (value: string | null | undefined) => {
+const parseItems = (
+  value: string | null | undefined,
+) => {
   if (!value) return [];
 
   return value
@@ -92,38 +77,80 @@ const parseItems = (value: string | null | undefined) => {
     .filter(Boolean);
 };
 
-const formatExperience = (experience: string) =>
-  experience.charAt(0) + experience.slice(1).toLowerCase();
+const formatExperience = (
+  experience: string,
+) =>
+  experience.charAt(0) +
+  experience.slice(1).toLowerCase();
 
-const formatJoinedDate = (date: string) =>
-  new Date(date).toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
+const formatJoinedDate = (
+  date: string,
+) =>
+  new Date(date).toLocaleDateString(
+    "en-US",
+    {
+      month: "long",
+      year: "numeric",
+    },
+  );
 
 const Profile = () => {
   const navigate = useNavigate();
+
+  const { userId } = useParams<{
+    userId: string;
+  }>();
+
+  /*
+   * ==============================
+   * PROFILE
+   * ==============================
+   */
 
   const {
     data,
     isLoading,
     isError,
-  } = useQuery<ProfileResponse>({
-    queryKey: ["profile"],
+  } = useQuery({
+    queryKey: [
+      "profile",
+      userId ?? "me",
+    ],
+
     queryFn: async () => {
-      const response = await api.get<ProfileResponse>("/profile");
+      const endpoint = userId
+        ? `/profile/${userId}`
+        : "/profile";
+
+      const response =
+        await api.get(endpoint);
+
       return response.data;
     },
   });
 
+  /*
+   * ==============================
+   * GITHUB
+   * ==============================
+   */
+
   const {
     data: githubData,
     isLoading: githubLoading,
-  } = useQuery<GithubProjectsResponse>({
-    queryKey: ["github-projects"],
+  } = useQuery({
+    queryKey: [
+      "github-projects",
+      userId ?? "me",
+    ],
+
     queryFn: async () => {
+      const endpoint = userId
+        ? `/projects/github/${userId}`
+        : "/projects/github";
+
       const response =
-        await api.get<GithubProjectsResponse>("/projects/github");
+        await api.get(endpoint);
 
       return response.data;
     },
@@ -131,73 +158,201 @@ const Profile = () => {
 
   const user = data?.user;
   const profile = data?.profile;
-  const githubProjects = githubData?.projects ?? [];
+
+  const githubProjects =
+    githubData?.projects ?? [];
 
   const skills = useMemo(
-    () => parseItems(profile?.skills),
+    () =>
+      parseItems(
+        profile?.skills,
+      ),
     [profile?.skills],
   );
 
   const goals = useMemo(
-    () => parseItems(profile?.goals),
+    () =>
+      parseItems(
+        profile?.goals,
+      ),
     [profile?.goals],
   );
 
-  const totalStars = githubProjects.reduce(
-    (total, project) => total + project.stars,
-    0,
-  );
+  const totalStars =
+    githubProjects.reduce(
+      (
+        total: number,
+        project: GithubProject,
+      ) =>
+        total + project.stars,
+      0,
+    );
+
+  /*
+   * Only relevant to the current user's profile.
+   *
+   * Another user's profile shouldn't show
+   * the Sync GitHub button.
+   */
+
+  const isViewingOtherUser =
+    Boolean(userId);
 
   const isGithubUser =
-    user?.provider?.toUpperCase() === "GITHUB";
+    user?.provider?.toUpperCase() ===
+    "GITHUB";
 
   const isGithubSynced =
     githubData?.synced === true;
 
   const handleGithubSync = () => {
-    window.location.href = `${API_URL}/auth/github`;
+    window.location.href =
+      `${API_URL}/auth/github`;
   };
+
+  /*
+   * ==============================
+   * LOADING
+   * ==============================
+   */
 
   if (isLoading) {
     return (
       <AppLayout>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-card border border-border/50 rounded-2xl overflow-hidden animate-pulse">
-            <div className="h-32 bg-muted" />
+        <div className="w-full max-w-6xl mx-auto">
+          {/* Profile Header Skeleton */}
+
+          <div className="bg-card border border-border/50 rounded-2xl overflow-hidden">
+            <div className="h-32 bg-muted animate-pulse" />
 
             <div className="px-8 pb-8">
               <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-16">
-                <div className="w-32 h-32 rounded-full bg-muted border-4 border-card" />
+                <div className="w-32 h-32 rounded-full bg-muted border-4 border-card animate-pulse" />
 
                 <div className="flex-1 space-y-3">
-                  <div className="h-7 w-48 rounded bg-muted" />
-                  <div className="h-4 w-32 rounded bg-muted" />
+                  <div className="h-7 w-48 rounded bg-muted animate-pulse" />
+
+                  <div className="h-4 w-32 rounded bg-muted animate-pulse" />
                 </div>
               </div>
 
-              <div className="h-4 max-w-2xl mt-6 rounded bg-muted" />
-              <div className="h-4 w-72 mt-3 rounded bg-muted" />
+              <div className="h-4 max-w-2xl mt-6 rounded bg-muted animate-pulse" />
+
+              <div className="h-4 w-72 mt-3 rounded bg-muted animate-pulse" />
             </div>
           </div>
 
+          {/* GitHub Stats Skeleton */}
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-            {Array.from({ length: 4 }).map((_, index) => (
+            {Array.from({
+              length: 4,
+            }).map((_, index) => (
               <div
                 key={index}
-                className="h-28 bg-card border border-border/50 rounded-xl animate-pulse"
-              />
+                className="bg-card border border-border/50 rounded-xl p-4 text-center"
+              >
+                <div className="w-5 h-5 mx-auto mb-3 rounded bg-muted animate-pulse" />
+
+                <div className="h-8 w-12 mx-auto rounded-md bg-muted animate-pulse" />
+
+                <div className="h-3 w-20 mx-auto mt-2 rounded bg-muted animate-pulse" />
+              </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-            <div className="h-72 bg-card border border-border/50 rounded-xl animate-pulse" />
+          {/* Main Content Skeleton */}
 
-            <div className="lg:col-span-2 h-96 bg-card border border-border/50 rounded-xl animate-pulse" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            {/* Left */}
+
+            <div className="space-y-6">
+              <div className="bg-card border border-border/50 rounded-xl p-6">
+                <div className="h-5 w-28 rounded bg-muted animate-pulse mb-6" />
+
+                <div className="h-4 w-full rounded bg-muted animate-pulse mb-3" />
+
+                <div className="h-2 w-full rounded bg-muted animate-pulse" />
+
+                <div className="h-3 w-20 rounded bg-muted animate-pulse mt-6" />
+
+                <div className="h-4 w-40 rounded bg-muted animate-pulse mt-2" />
+              </div>
+
+              <div className="bg-card border border-border/50 rounded-xl p-6">
+                <div className="h-5 w-20 rounded bg-muted animate-pulse mb-5" />
+
+                <div className="flex flex-wrap gap-2">
+                  {Array.from({
+                    length: 6,
+                  }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="h-7 w-16 rounded-full bg-muted animate-pulse"
+                    />
+                  ))}
+                </div>
+
+                <div className="h-5 w-16 rounded bg-muted animate-pulse mt-7 mb-4" />
+
+                <div className="flex flex-wrap gap-2">
+                  {Array.from({
+                    length: 4,
+                  }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="h-7 w-20 rounded-full bg-muted animate-pulse"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right */}
+
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-card border border-border/50 rounded-xl p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="h-5 w-40 rounded bg-muted animate-pulse" />
+
+                  <div className="h-6 w-8 rounded-full bg-muted animate-pulse" />
+                </div>
+
+                <div className="space-y-3">
+                  {Array.from({
+                    length: 4,
+                  }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="h-24 rounded-lg bg-muted animate-pulse"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-card border border-border/50 rounded-xl p-6">
+                <div className="h-5 w-48 rounded bg-muted animate-pulse mb-6" />
+
+                <div className="flex flex-col items-center py-4">
+                  <div className="w-12 h-12 rounded-xl bg-muted animate-pulse mb-4" />
+
+                  <div className="h-4 w-40 rounded bg-muted animate-pulse" />
+
+                  <div className="h-3 w-52 rounded bg-muted animate-pulse mt-2" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </AppLayout>
     );
   }
+
+  /*
+   * ==============================
+   * PROFILE ERROR
+   * ==============================
+   */
 
   if (
     isError ||
@@ -207,21 +362,24 @@ const Profile = () => {
   ) {
     return (
       <AppLayout>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-card border border-destructive/30 rounded-2xl p-10 text-center">
-            <h1 className="text-xl font-semibold text-foreground">
+        <div className="w-full max-w-6xl mx-auto flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-foreground">
               Unable to load profile
-            </h1>
+            </h2>
 
             <p className="text-sm text-muted-foreground mt-2">
-              We could not retrieve your profile information.
+              We could not retrieve this
+              profile information.
             </p>
 
             <Button
               className="mt-6"
-              onClick={() => navigate("/profile/edit")}
+              onClick={() =>
+                navigate("/discover")
+              }
             >
-              Create Profile
+              Back to Discover
             </Button>
           </div>
         </div>
@@ -229,33 +387,56 @@ const Profile = () => {
     );
   }
 
+  /*
+   * ==============================
+   * PAGE
+   * ==============================
+   */
+
   return (
     <AppLayout>
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full max-w-6xl mx-auto">
+        {/* ============================== */}
+        {/* PROFILE HEADER */}
+        {/* ============================== */}
 
-        {/* Profile Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
           className="bg-card border border-border/50 rounded-2xl overflow-hidden"
         >
           <div className="h-32 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/5" />
 
           <div className="px-8 pb-8">
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-16">
+              {/* Avatar */}
+
               <Avatar className="w-32 h-32 border-4 border-card shadow-lg">
                 <AvatarImage
-                  src={user.image ?? undefined}
+                  src={
+                    user.image ??
+                    undefined
+                  }
                   alt={user.name}
                 />
 
                 <AvatarFallback className="text-3xl">
-                  {getInitials(user.name)}
+                  {getInitials(
+                    user.name,
+                  )}
                 </AvatarFallback>
               </Avatar>
 
               <div className="flex-1">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  {/* Name */}
+
                   <div>
                     <h1 className="text-2xl font-bold text-foreground">
                       {user.name}
@@ -263,142 +444,236 @@ const Profile = () => {
 
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <span>
-                        {formatExperience(profile.experience)} Developer
+                        {formatExperience(
+                          profile.experience,
+                        )}{" "}
+                        Developer
                       </span>
 
                       <ExternalLink className="w-3 h-3" />
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
-                    {!isGithubUser && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleGithubSync}
-                      >
-                        <RefreshCw className="w-4 h-4 mr-2" />
-                        Sync GitHub
-                      </Button>
-                    )}
+                  {/* Actions */}
 
-                    <Button
-                      variant="subtle"
-                      size="sm"
-                      onClick={() => navigate("/profile/edit")}
-                    >
-                      <Edit2 className="w-4 h-4 mr-2" />
-                      Edit
-                    </Button>
+                  <div className="flex gap-2">
+                    {/* Sync GitHub ONLY on own profile */}
+
+                    {!isViewingOtherUser &&
+                      !isGithubUser && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={
+                            handleGithubSync
+                          }
+                        >
+                          <RefreshCw className="w-4 h-4 mr-2" />
+
+                          Sync GitHub
+                        </Button>
+                      )}
+
+                    {/* Edit ONLY on own profile */}
+
+                    {/* {!isViewingOtherUser && (
+                      <Button
+                        variant="subtle"
+                        size="sm"
+                        onClick={() =>
+                          navigate(
+                            "/profile/edit",
+                          )
+                        }
+                      >
+                        <Edit2 className="w-4 h-4 mr-2" />
+
+                        Edit
+                      </Button>
+                    )} */}
                   </div>
                 </div>
               </div>
             </div>
 
+            {/* Bio */}
+
             <p className="mt-4 text-muted-foreground max-w-2xl">
-              {profile.bio || "No biography has been added yet."}
+              {profile.bio ||
+                "No biography has been added yet."}
             </p>
+
+            {/* Meta */}
 
             <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
+
                 {profile.timezone}
               </span>
 
               <span className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
-                Joined {formatJoinedDate(user.createdAt)}
+
+                Joined{" "}
+                {formatJoinedDate(
+                  user.createdAt,
+                )}
               </span>
             </div>
           </div>
         </motion.div>
 
-        {/* GitHub Stats */}
+        {/* ============================== */}
+        {/* GITHUB STATS */}
+        {/* ============================== */}
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.1,
+          }}
           className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6"
         >
           {/* Repositories */}
+
           <div className="bg-card border border-border/50 rounded-xl p-4 text-center">
             <GitBranch className="w-5 h-5 text-primary mx-auto mb-2" />
 
-            <p className="text-2xl font-bold font-mono text-foreground">
-              {githubLoading
-                ? "—"
-                : !isGithubSynced
-                  ? "—"
-                  : githubProjects.length}
-            </p>
+            {githubLoading ? (
+              <>
+                <div className="h-8 w-12 mx-auto rounded-md bg-muted animate-pulse" />
 
-            <p className="text-xs text-muted-foreground">
-              Repositories
-            </p>
+                <div className="h-3 w-20 mx-auto mt-2 rounded bg-muted animate-pulse" />
+              </>
+            ) : (
+              <>
+                <p className="text-2xl font-bold font-mono text-foreground">
+                  {!isGithubSynced
+                    ? "—"
+                    : githubProjects.length}
+                </p>
+
+                <p className="text-xs text-muted-foreground">
+                  Repositories
+                </p>
+              </>
+            )}
           </div>
 
           {/* Commits */}
+
           <div className="bg-card border border-border/50 rounded-xl p-4 text-center">
             <Code2 className="w-5 h-5 text-success mx-auto mb-2" />
 
-            <p className="text-2xl font-bold font-mono text-foreground">
-              {githubLoading
-                ? "—"
-                : !isGithubSynced
-                  ? "—"
-                  : githubData?.stats.commits ?? 0}
-            </p>
+            {githubLoading ? (
+              <>
+                <div className="h-8 w-12 mx-auto rounded-md bg-muted animate-pulse" />
 
-            <p className="text-xs text-muted-foreground">
-              Commits
-            </p>
+                <div className="h-3 w-14 mx-auto mt-2 rounded bg-muted animate-pulse" />
+              </>
+            ) : (
+              <>
+                <p className="text-2xl font-bold font-mono text-foreground">
+                  {!isGithubSynced
+                    ? "—"
+                    : githubData?.stats
+                        ?.commits ?? 0}
+                </p>
+
+                <p className="text-xs text-muted-foreground">
+                  Commits
+                </p>
+              </>
+            )}
           </div>
 
           {/* Stars */}
+
           <div className="bg-card border border-border/50 rounded-xl p-4 text-center">
             <Star className="w-5 h-5 text-warning mx-auto mb-2" />
 
-            <p className="text-2xl font-bold font-mono text-foreground">
-              {githubLoading
-                ? "—"
-                : !isGithubSynced
-                  ? "—"
-                  : totalStars}
-            </p>
+            {githubLoading ? (
+              <>
+                <div className="h-8 w-12 mx-auto rounded-md bg-muted animate-pulse" />
 
-            <p className="text-xs text-muted-foreground">
-              Stars
-            </p>
+                <div className="h-3 w-10 mx-auto mt-2 rounded bg-muted animate-pulse" />
+              </>
+            ) : (
+              <>
+                <p className="text-2xl font-bold font-mono text-foreground">
+                  {!isGithubSynced
+                    ? "—"
+                    : totalStars}
+                </p>
+
+                <p className="text-xs text-muted-foreground">
+                  Stars
+                </p>
+              </>
+            )}
           </div>
 
           {/* Contributions */}
+
           <div className="bg-card border border-border/50 rounded-xl p-4 text-center">
             <GitBranch className="w-5 h-5 text-info mx-auto mb-2" />
 
-            <p className="text-2xl font-bold font-mono text-foreground">
-              {githubLoading
-                ? "—"
-                : !isGithubSynced
-                  ? "—"
-                  : githubData?.stats.contributions ?? 0}
-            </p>
+            {githubLoading ? (
+              <>
+                <div className="h-8 w-12 mx-auto rounded-md bg-muted animate-pulse" />
 
-            <p className="text-xs text-muted-foreground">
-              Contributions
-            </p>
+                <div className="h-3 w-24 mx-auto mt-2 rounded bg-muted animate-pulse" />
+              </>
+            ) : (
+              <>
+                <p className="text-2xl font-bold font-mono text-foreground">
+                  {!isGithubSynced
+                    ? "—"
+                    : githubData?.stats
+                        ?.contributions ??
+                      0}
+                </p>
+
+                <p className="text-xs text-muted-foreground">
+                  Contributions
+                </p>
+              </>
+            )}
           </div>
         </motion.div>
 
+        {/* ============================== */}
+        {/* MAIN CONTENT */}
+        {/* ============================== */}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          {/* ============================== */}
+          {/* LEFT COLUMN */}
+          {/* ============================== */}
 
-          {/* Left Column */}
           <div className="space-y-6">
-
             {/* Experience */}
+
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 0.2,
+              }}
               className="bg-card border border-border/50 rounded-xl p-6"
             >
               <h3 className="font-semibold text-foreground mb-4">
@@ -413,15 +688,19 @@ const Profile = () => {
                     </span>
 
                     <span className="text-muted-foreground font-mono">
-                      {formatExperience(profile.experience)}
+                      {formatExperience(
+                        profile.experience,
+                      )}
                     </span>
                   </div>
 
                   <Progress
                     value={
-                      profile.experience === "BEGINNER"
+                      profile.experience ===
+                      "BEGINNER"
                         ? 33
-                        : profile.experience === "INTERMEDIATE"
+                        : profile.experience ===
+                            "INTERMEDIATE"
                           ? 66
                           : 100
                     }
@@ -435,17 +714,28 @@ const Profile = () => {
                   </p>
 
                   <p className="text-sm text-foreground mt-1">
-                    {profile.availability}
+                    {
+                      profile.availability
+                    }
                   </p>
                 </div>
               </div>
             </motion.div>
 
             {/* Skills & Goals */}
+
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 0.3,
+              }}
               className="bg-card border border-border/50 rounded-xl p-6"
             >
               <h3 className="font-semibold text-foreground mb-4">
@@ -454,15 +744,17 @@ const Profile = () => {
 
               {skills.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
-                  {skills.map((skill) => (
-                    <Badge
-                      key={skill}
-                      variant="outline"
-                      className="bg-primary/10 text-primary border-primary/30"
-                    >
-                      {skill}
-                    </Badge>
-                  ))}
+                  {skills.map(
+                    (skill) => (
+                      <Badge
+                        key={skill}
+                        variant="outline"
+                        className="bg-primary/10 text-primary border-primary/30"
+                      >
+                        {skill}
+                      </Badge>
+                    ),
+                  )}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">
@@ -476,15 +768,17 @@ const Profile = () => {
 
               {goals.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
-                  {goals.map((goal) => (
-                    <Badge
-                      key={goal}
-                      variant="outline"
-                      className="font-mono text-xs"
-                    >
-                      {goal}
-                    </Badge>
-                  ))}
+                  {goals.map(
+                    (goal) => (
+                      <Badge
+                        key={goal}
+                        variant="outline"
+                        className="font-mono text-xs"
+                      >
+                        {goal}
+                      </Badge>
+                    ),
+                  )}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">
@@ -494,14 +788,25 @@ const Profile = () => {
             </motion.div>
           </div>
 
-          {/* Right Column */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* ============================== */}
+          {/* RIGHT COLUMN */}
+          {/* ============================== */}
 
+          <div className="lg:col-span-2 space-y-6">
             {/* GitHub Repositories */}
+
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 0.2,
+              }}
               className="bg-card border border-border/50 rounded-xl p-6"
             >
               <div className="flex items-center justify-between mb-4">
@@ -511,23 +816,34 @@ const Profile = () => {
 
                 {isGithubSynced &&
                   !githubLoading &&
-                  githubProjects.length > 0 && (
+                  githubProjects.length >
+                    0 && (
                     <Badge variant="outline">
-                      {githubProjects.length}
+                      {
+                        githubProjects.length
+                      }
                     </Badge>
                   )}
               </div>
 
+              {/* Loading */}
+
               {githubLoading ? (
                 <div className="space-y-3">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="h-24 rounded-lg bg-muted animate-pulse"
-                    />
-                  ))}
+                  {Array.from({
+                    length: 4,
+                  }).map(
+                    (_, index) => (
+                      <div
+                        key={index}
+                        className="h-24 rounded-lg bg-muted animate-pulse"
+                      />
+                    ),
+                  )}
                 </div>
               ) : !isGithubSynced ? (
+                /* Not synced */
+
                 <div className="py-12 text-center">
                   <GitBranch className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
 
@@ -536,65 +852,106 @@ const Profile = () => {
                   </p>
 
                   <p className="text-xs text-muted-foreground mt-1">
-                    Connect your GitHub account to see your repositories,
-                    commits, stars, and contributions.
+                    {isViewingOtherUser
+                      ? "This user has not connected their GitHub account."
+                      : "Connect your GitHub account to see your repositories, commits, stars, and contributions."}
                   </p>
+
+                  {/* Sync button only for own profile */}
+
+                  {!isViewingOtherUser &&
+                    !isGithubUser && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-4"
+                        onClick={
+                          handleGithubSync
+                        }
+                      >
+                        <RefreshCw className="w-4 h-4 mr-2" />
+
+                        Sync GitHub
+                      </Button>
+                    )}
                 </div>
-              ) : githubProjects.length > 0 ? (
+              ) : githubProjects.length >
+                0 ? (
+                /* Projects */
+
                 <div className="space-y-3">
-                  {githubProjects.map((project) => (
-                    <div
-                      key={project.id}
-                      className="border border-border/50 rounded-lg p-4 hover:bg-muted/30 transition-colors"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="min-w-0">
-                          <h4 className="font-medium text-foreground truncate">
-                            {project.name}
-                          </h4>
+                  {githubProjects.map(
+                    (
+                      project: GithubProject,
+                    ) => (
+                      <div
+                        key={
+                          project.id
+                        }
+                        className="border border-border/50 rounded-lg p-4 hover:bg-muted/30 transition-colors"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="min-w-0">
+                            <h4 className="font-medium text-foreground truncate">
+                              {
+                                project.name
+                              }
+                            </h4>
 
-                          {project.description && (
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                              {project.description}
-                            </p>
-                          )}
-
-                          <div className="flex items-center gap-2 mt-3">
-                            {project.language && (
-                              <Badge
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                {project.language}
-                              </Badge>
+                            {project.description && (
+                              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                {
+                                  project.description
+                                }
+                              </p>
                             )}
 
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Star className="w-3 h-3" />
-                              {project.stars}
-                            </span>
-                          </div>
-                        </div>
+                            <div className="flex items-center gap-2 mt-3">
+                              {project.language && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs"
+                                >
+                                  {
+                                    project.language
+                                  }
+                                </Badge>
+                              )}
 
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          asChild
-                        >
-                          <a
-                            href={project.htmlUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Open ${project.name} on GitHub`}
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Star className="w-3 h-3" />
+
+                                {
+                                  project.stars
+                                }
+                              </span>
+                            </div>
+                          </div>
+
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            asChild
                           >
-                            <ExternalLink className="w-4 h-4" />
-                          </a>
-                        </Button>
+                            <a
+                              href={
+                                project.htmlUrl
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Open ${project.name} on GitHub`}
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </a>
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ),
+                  )}
                 </div>
               ) : (
+                /* Empty */
+
                 <div className="py-10 text-center">
                   <GitBranch className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
 
@@ -609,11 +966,22 @@ const Profile = () => {
               )}
             </motion.div>
 
-            {/* Current Collaborations */}
+            {/* ============================== */}
+            {/* CURRENT COLLABORATIONS */}
+            {/* ============================== */}
+
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 0.3,
+              }}
               className="bg-card border border-border/50 rounded-xl p-6"
             >
               <h3 className="font-semibold text-foreground mb-4">
@@ -630,7 +998,8 @@ const Profile = () => {
                 </p>
 
                 <p className="text-xs text-muted-foreground mt-1">
-                  Your active projects will appear here.
+                  Active projects will
+                  appear here.
                 </p>
               </div>
             </motion.div>
