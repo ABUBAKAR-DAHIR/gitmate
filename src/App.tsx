@@ -57,6 +57,7 @@ import OtherProfile from "./pages/OtherProfile";
                                 <Route path="/projects" element={<Projects />} />
                                 <Route path="/settings" element={<Settings />} />
                                 <Route path="/matches" element={<Matches />} />
+                                <Route path="/chat/:id" element={<Chat /> } />
                             </Route>
 
                             <Route path="/details" element={<Details />} />
