@@ -7,6 +7,7 @@ import {
   Settings,
   LogOut,
   LayoutDashboard,
+  Rss,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -29,6 +30,7 @@ import api from "@/lib/axios";
 import { useRef } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import Themer from "../Themer";
 
 interface NavItem {
   label: string;
@@ -282,7 +284,39 @@ export const Navbar = () => {
                     Settings
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild className="border-2 border-transparent hover:border-accent">
+                    <Link
+                        to="/dashboard"
+                        className="flex cursor-pointer items-center gap-2"
+                    >
+                        <LayoutDashboard className="h-4 w-4" />
+                        Dashboard
+                    </Link>
+                </DropdownMenuItem>
 
+                <DropdownMenuItem asChild className="border-2 border-transparent hover:border-accent">
+                    <Link
+                        to="/feed"
+                        className="flex cursor-pointer items-center gap-2"
+                    >
+                        <Rss className="h-4 w-4" />
+                        Feed
+                    </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem asChild className="border-2 border-transparent hover:border-accent">
+                    <Link
+                        to="/matches"
+                        className="flex cursor-pointer items-center gap-2"
+                    >
+                        <Users className="h-4 w-4" />
+                        Matches
+                    </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem asChild className="border-2 border-transparent hover:border-accent">
+                    <Themer className="w-full cursor-pointer"/>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-border" />
 
                 <DropdownMenuItem

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Users, MessageSquare, FolderKanban, Zap, ArrowRight } from "lucide-react";
+import { Users, MessageSquare, FolderKanban, Zap, ArrowRight, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { StatCard } from "@/components/cards/StatCard";
@@ -248,9 +248,10 @@ const Dashboard = () => {
                         </div>
 
                         <Button
-                        variant="ghost"
-                        size="icon"
-                        className="shrink-0"
+                            variant="ghost"
+                            size="icon"
+                            className="shrink-0"
+                            onClick={() => window.location.href = `/chat/${match?.user?.id}`}
                         >
                         <MessageSquare className="w-4 h-4" />
                         </Button>
@@ -278,7 +279,7 @@ const Dashboard = () => {
             <Link to="/profile" className="group">
                 <div className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/30 transition-all duration-300 group-hover:shadow-glow">
                 <Users className="w-6 h-6 text-accent mb-3" />
-                <h4 className="font-medium text-foreground">Update Profile</h4>
+                <h4 className="font-medium text-foreground">View Profile</h4>
                 <p className="text-sm text-muted-foreground">Sync your latest Github activity</p>
                 </div>
             </Link>
@@ -287,6 +288,13 @@ const Dashboard = () => {
                 <Zap className="w-6 h-6 text-warning mb-3" />
                 <h4 className="font-medium text-foreground">Why Gitmate?</h4>
                 <p className="text-sm text-muted-foreground">Learn about our matching algorithm</p>
+                </div>
+            </Link>
+            <Link to="/settings" className="group">
+                <div className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/30 transition-all duration-300 group-hover:shadow-glow">
+                    <Settings className="w-6 h-6 text-muted-foreground mb-3" />
+                    <h4 className="font-medium text-foreground">Settings</h4>
+                    <p className="text-sm text-muted-foreground">Manage your account preferences</p>
                 </div>
             </Link>
             </motion.div>
