@@ -197,9 +197,20 @@ const Feed = () => {
     setMatchError(null);
 
     createMatchMutation.mutate(
-      currentDeveloper.id,
+      currentDeveloper.userId,
     );
   };
+// const handleSwipeRight = () => {
+//     console.log("CURRENT DEVELOPER:", currentDeveloper);
+//     console.log("CURRENT DEVELOPER ID:", currentDeveloper?.id);
+  
+//     if (!currentDeveloper?.id) {
+//       console.error("No developer ID available");
+//       return;
+//     }
+  
+//     createMatchMutation.mutate(currentDeveloper.id);
+//   };
 
   /*
    * =========================

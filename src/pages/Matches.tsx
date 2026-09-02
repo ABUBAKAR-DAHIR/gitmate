@@ -25,21 +25,6 @@ interface MatchProfile {
   timezone: string;
 }
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  image: string | null;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-interface ProfileResponse {
-  success: boolean;
-  user: User;
-  profile?: MatchProfile | null;
-}
-
 interface MatchedUser {
   id: string;
   name: string;
@@ -129,57 +114,26 @@ const getSkills = (
 const Matches = () => {
   const [search, setSearch] = useState("");
 
-  const {
-    data: profileData,
-    isLoading: isProfileLoading,
-    isError: isProfileError,
-  } = useQuery<ProfileResponse>({
-    queryKey: ["profile"],
-    queryFn: async () => {
-      const response = await api.get("/profile");
-      return response.data;
-    },
-    retry: false,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const user = profileData?.user;
-
+  // GET /matches
+  // Backend gets the logged-in user's ID from JWT.
   const {
     data: matchesData,
-    isLoading: isMatchesLoading,
-    isError: isMatchesError,
+    isLoading,
+    isError,
   } = useQuery<MatchesResponse>({
-    queryKey: ["matches", user?.id],
-    enabled: !!user?.id,
+    queryKey: ["matches"],
     queryFn: async () => {
-      if (!user?.id) {
-        throw new Error("User ID is not available");
-      }
-
-      console.log(
-        "MATCH REQUEST userId:",
-        user.id,
-      );
-
-      const response = await api.post<MatchesResponse>(
+      const response = await api.get<MatchesResponse>(
         "/matches",
-        {
-          userId: user.id,
-        },
       );
+
+      console.log("MATCHES RESPONSE:", response.data);
 
       return response.data;
     },
   });
 
   const matches = matchesData?.data ?? [];
-
-  const isLoading =
-    isProfileLoading || isMatchesLoading;
-
-  const isError =
-    isProfileError || isMatchesError;
 
   const filteredMatches = useMemo(() => {
     const searchValue = search
@@ -212,6 +166,8 @@ const Matches = () => {
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* Header */}
         <motion.div
           initial={{
             opacity: 0,
@@ -240,6 +196,7 @@ const Matches = () => {
           </div>
         </motion.div>
 
+        {/* Search */}
         <motion.div
           initial={{
             opacity: 0,
@@ -268,6 +225,7 @@ const Matches = () => {
           </div>
         </motion.div>
 
+        {/* Loading */}
         {isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Array.from({ length: 4 }).map(
@@ -281,9 +239,7 @@ const Matches = () => {
 
                     <div className="flex-1 space-y-3">
                       <div className="h-4 w-1/2 rounded bg-muted" />
-
                       <div className="h-3 w-1/3 rounded bg-muted" />
-
                       <div className="h-3 w-full rounded bg-muted" />
 
                       <div className="flex gap-2">
@@ -303,6 +259,7 @@ const Matches = () => {
           </div>
         )}
 
+        {/* Error */}
         {isError && (
           <div className="bg-card border border-destructive/30 rounded-2xl p-8 text-center">
             <h2 className="font-semibold text-foreground">
@@ -316,6 +273,7 @@ const Matches = () => {
           </div>
         )}
 
+        {/* No matches */}
         {!isLoading &&
           !isError &&
           matches.length === 0 && (
@@ -354,6 +312,7 @@ const Matches = () => {
             </motion.div>
           )}
 
+        {/* Search returned nothing */}
         {!isLoading &&
           !isError &&
           matches.length > 0 &&
@@ -377,6 +336,7 @@ const Matches = () => {
             </div>
           )}
 
+        {/* Matches */}
         {!isLoading &&
           !isError &&
           filteredMatches.length > 0 && (
@@ -407,6 +367,8 @@ const Matches = () => {
                       className="bg-card border border-border/50 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 group"
                     >
                       <div className="flex items-start gap-4">
+
+                        {/* Avatar */}
                         <Avatar className="w-16 h-16 border-2 border-border">
                           <AvatarImage
                             src={
@@ -423,6 +385,7 @@ const Matches = () => {
                           </AvatarFallback>
                         </Avatar>
 
+                        {/* User info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
@@ -484,6 +447,7 @@ const Matches = () => {
                         </div>
                       </div>
 
+                      {/* Actions */}
                       <div className="flex gap-3 mt-4 pt-4 border-t border-border/50">
                         <Button
                           variant="outline"
