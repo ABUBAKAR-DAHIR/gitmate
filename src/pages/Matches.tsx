@@ -25,6 +25,21 @@ interface MatchProfile {
   timezone: string;
 }
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  image: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface ProfileResponse {
+  success: boolean;
+  user: User;
+  profile?: MatchProfile | null;
+}
+
 interface MatchedUser {
   id: string;
   name: string;
@@ -97,7 +112,9 @@ const formatMatchedDate = (date: string) => {
   return matchDate.toLocaleDateString();
 };
 
-const getSkills = (skills: string | null | undefined) => {
+const getSkills = (
+  skills: string | null | undefined,
+) => {
   if (!skills) {
     return [];
   }
@@ -113,21 +130,56 @@ const Matches = () => {
   const [search, setSearch] = useState("");
 
   const {
-    data,
-    isLoading,
-    isError,
-  } = useQuery<MatchesResponse>({
-    queryKey: ["matches"],
+    data: profileData,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+  } = useQuery<ProfileResponse>({
+    queryKey: ["profile"],
     queryFn: async () => {
-      const response = await api.get<MatchesResponse>(
+      const response = await api.get("/profile");
+      return response.data;
+    },
+    retry: false,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const user = profileData?.user;
+
+  const {
+    data: matchesData,
+    isLoading: isMatchesLoading,
+    isError: isMatchesError,
+  } = useQuery<MatchesResponse>({
+    queryKey: ["matches", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      if (!user?.id) {
+        throw new Error("User ID is not available");
+      }
+
+      console.log(
+        "MATCH REQUEST userId:",
+        user.id,
+      );
+
+      const response = await api.post<MatchesResponse>(
         "/matches",
+        {
+          userId: user.id,
+        },
       );
 
       return response.data;
     },
   });
 
-  const matches = data?.data ?? [];
+  const matches = matchesData?.data ?? [];
+
+  const isLoading =
+    isProfileLoading || isMatchesLoading;
+
+  const isError =
+    isProfileError || isMatchesError;
 
   const filteredMatches = useMemo(() => {
     const searchValue = search
@@ -139,23 +191,21 @@ const Matches = () => {
     }
 
     return matches.filter((match) => {
-      const user = match.user;
+      const matchedUser = match.user;
 
       const searchableText = [
-        user.name,
-        user.profile?.bio,
-        user.profile?.skills,
-        user.profile?.goals,
-        user.profile?.experience,
-        user.profile?.timezone,
+        matchedUser.name,
+        matchedUser.profile?.bio,
+        matchedUser.profile?.skills,
+        matchedUser.profile?.goals,
+        matchedUser.profile?.experience,
+        matchedUser.profile?.timezone,
       ]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
 
-      return searchableText.includes(
-        searchValue,
-      );
+      return searchableText.includes(searchValue);
     });
   }, [matches, search]);
 
@@ -190,7 +240,6 @@ const Matches = () => {
           </div>
         </motion.div>
 
-        {/* Search */}
         <motion.div
           initial={{
             opacity: 0,
@@ -219,45 +268,41 @@ const Matches = () => {
           </div>
         </motion.div>
 
-        {/* Loading */}
         {isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {Array.from({
-              length: 4,
-            }).map((_, index) => (
-              <div
-                key={index}
-                className="bg-card border border-border/50 rounded-2xl p-6 animate-pulse"
-              >
-                <div className="flex gap-4">
-                  <div className="w-16 h-16 rounded-full bg-muted" />
+            {Array.from({ length: 4 }).map(
+              (_, index) => (
+                <div
+                  key={index}
+                  className="bg-card border border-border/50 rounded-2xl p-6 animate-pulse"
+                >
+                  <div className="flex gap-4">
+                    <div className="w-16 h-16 rounded-full bg-muted" />
 
-                  <div className="flex-1 space-y-3">
-                    <div className="h-4 w-1/2 rounded bg-muted" />
+                    <div className="flex-1 space-y-3">
+                      <div className="h-4 w-1/2 rounded bg-muted" />
 
-                    <div className="h-3 w-1/3 rounded bg-muted" />
+                      <div className="h-3 w-1/3 rounded bg-muted" />
 
-                    <div className="h-3 w-full rounded bg-muted" />
+                      <div className="h-3 w-full rounded bg-muted" />
 
-                    <div className="flex gap-2">
-                      <div className="h-6 w-20 rounded bg-muted" />
-
-                      <div className="h-6 w-20 rounded bg-muted" />
+                      <div className="flex gap-2">
+                        <div className="h-6 w-20 rounded bg-muted" />
+                        <div className="h-6 w-20 rounded bg-muted" />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-3 mt-6 pt-4 border-t border-border/50">
-                  <div className="h-9 rounded bg-muted" />
-
-                  <div className="h-9 rounded bg-muted" />
+                  <div className="grid grid-cols-2 gap-3 mt-6 pt-4 border-t border-border/50">
+                    <div className="h-9 rounded bg-muted" />
+                    <div className="h-9 rounded bg-muted" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
         )}
 
-        {/* Error */}
         {isError && (
           <div className="bg-card border border-destructive/30 rounded-2xl p-8 text-center">
             <h2 className="font-semibold text-foreground">
@@ -271,7 +316,6 @@ const Matches = () => {
           </div>
         )}
 
-        {/* Empty matches */}
         {!isLoading &&
           !isError &&
           matches.length === 0 && (
@@ -310,7 +354,6 @@ const Matches = () => {
             </motion.div>
           )}
 
-        {/* No search results */}
         {!isLoading &&
           !isError &&
           matches.length > 0 &&
@@ -327,16 +370,13 @@ const Matches = () => {
               <Button
                 variant="outline"
                 className="mt-5"
-                onClick={() =>
-                  setSearch("")
-                }
+                onClick={() => setSearch("")}
               >
                 Clear Search
               </Button>
             </div>
           )}
 
-        {/* Matches Grid */}
         {!isLoading &&
           !isError &&
           filteredMatches.length > 0 && (
@@ -362,9 +402,7 @@ const Matches = () => {
                         y: 0,
                       }}
                       transition={{
-                        delay:
-                          0.1 *
-                          (index + 1),
+                        delay: 0.1 * (index + 1),
                       }}
                       className="bg-card border border-border/50 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 group"
                     >
@@ -372,20 +410,15 @@ const Matches = () => {
                         <Avatar className="w-16 h-16 border-2 border-border">
                           <AvatarImage
                             src={
-                              match.user
-                                .image ??
+                              match.user.image ??
                               undefined
                             }
-                            alt={
-                              match.user
-                                .name
-                            }
+                            alt={match.user.name}
                           />
 
                           <AvatarFallback>
                             {getInitials(
-                              match.user
-                                .name,
+                              match.user.name,
                             )}
                           </AvatarFallback>
                         </Avatar>
@@ -394,17 +427,12 @@ const Matches = () => {
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
                               <h3 className="font-semibold text-foreground truncate">
-                                {
-                                  match.user
-                                    .name
-                                }
+                                {match.user.name}
                               </h3>
 
                               <p className="text-sm text-muted-foreground">
-                                {
-                                  profile?.experience ??
-                                  "Developer"
-                                }
+                                {profile?.experience ??
+                                  "Developer"}
                               </p>
                             </div>
 
@@ -417,28 +445,20 @@ const Matches = () => {
 
                           {profile?.bio && (
                             <p className="text-sm text-muted-foreground mt-3 line-clamp-2">
-                              {
-                                profile.bio
-                              }
+                              {profile.bio}
                             </p>
                           )}
 
                           {skills.length > 0 && (
                             <div className="flex flex-wrap gap-1.5 mt-3">
                               {skills.map(
-                                (
-                                  skill,
-                                ) => (
+                                (skill) => (
                                   <Badge
-                                    key={
-                                      skill
-                                    }
+                                    key={skill}
                                     variant="outline"
                                     className="text-xs font-mono"
                                   >
-                                    {
-                                      skill
-                                    }
+                                    {skill}
                                   </Badge>
                                 ),
                               )}
@@ -451,17 +471,13 @@ const Matches = () => {
                                 <span className="text-primary">
                                   Goal:
                                 </span>{" "}
-                                {
-                                  profile.goals
-                                }
+                                {profile.goals}
                               </span>
                             )}
 
                             {profile?.availability && (
                               <span className="text-xs text-muted-foreground">
-                                {
-                                  profile.availability
-                                }
+                                {profile.availability}
                               </span>
                             )}
                           </div>
