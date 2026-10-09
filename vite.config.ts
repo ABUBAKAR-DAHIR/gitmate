@@ -27,6 +27,10 @@ export default defineConfig(({ mode }) => ({
         "gitmate.net",
         "https://gitmate.org",
         "https://www.gitmate.org",
+        "http://gitmate.org",
+        "http://www.gitmate.org",
+        "http://gitmate.org",
+        "www.gitmate.org",
         "gitmate.org",
         "frontend-alb-524493602.ap-south-1.elb.amazonaws.com"
     ]
