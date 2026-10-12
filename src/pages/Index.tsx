@@ -252,25 +252,6 @@ return (
 
         {/* Useful Links */}
         <div className="flex flex-col gap-2">
-            <a
-                href="https://github.com"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-muted transition-colors"
-            >
-                <SiGithub size={18} />
-                GitHub
-            </a>
-
-            <Link
-                to="/docs"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-muted transition-colors"
-            >
-                <BookOpen size={18} />
-                Documentation
-            </Link>
-
             <Link
                 to="/settings"
                 onClick={() => setOpen(false)}
