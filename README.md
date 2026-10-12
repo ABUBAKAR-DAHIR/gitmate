@@ -18,7 +18,7 @@ Build together. Grow together.
 
 <br />
 
-<img src="/home.png" alt="Gitmate home page" width="92%" />
+<img src="home.png" alt="Gitmate home page" width="92%" />
 
 </div>
 
@@ -74,7 +74,7 @@ Gitmate connects to your GitHub, reads what you actually build, and matches you 
 ### Discover developers
 
 <div align="center">
-<img src="/feed.png" alt="Discovery feed with similarity score" width="92%" />
+<img src="feed.png" alt="Discovery feed with similarity score" width="92%" />
 </div>
 
 ### Dashboard, in light and dark
@@ -83,7 +83,7 @@ Gitmate connects to your GitHub, reads what you actually build, and matches you 
 
 | Light | Dark |
 |:---:|:---:|
-| <img src="/dashboard-light.png" alt="Dashboard in light mode" width="100%" /> | <img src="/dashboard-dark.png" alt="Dashboard in dark mode" width="100%" /> |
+| <img src="dashboard-light.png" alt="Dashboard in light mode" width="100%" /> | <img src="dashboard-dark.png" alt="Dashboard in dark mode" width="100%" /> |
 
 </div>
 
@@ -93,7 +93,7 @@ Gitmate connects to your GitHub, reads what you actually build, and matches you 
 
 | Profile | Settings |
 |:---:|:---:|
-| <img src="/profile.png" alt="Developer profile with GitHub stats" width="100%" /> | <img src="/settings.png" alt="Settings page" width="100%" /> |
+| <img src="profile.png" alt="Developer profile with GitHub stats" width="100%" /> | <img src="settings.png" alt="Settings page" width="100%" /> |
 
 </div>
 
@@ -107,7 +107,7 @@ Gitmate connects to your GitHub, reads what you actually build, and matches you 
 
 </div>
 
-| Layer | Technology |
+<!-- | Layer | Technology |
 |---|---|
 | **Frontend** | React, TypeScript, Vite, TanStack Query, React Router |
 | **Styling** | Tailwind CSS, shadcn/ui |
@@ -116,7 +116,52 @@ Gitmate connects to your GitHub, reads what you actually build, and matches you 
 | **Auth** | GitHub OAuth |
 | **Infrastructure** | AWS, Application Load Balancer, Terraform |
 | **CI/CD** | GitHub Actions |
-| **Hosting** | Vercel (frontend), AWS (backend) |
+| **Hosting** | Vercel (frontend), AWS (backend) | -->
+<br>
+<br>
+<div align="center">
+  <table>
+    <thead>
+      <tr>
+        <th align="center">Layer</th>
+        <th align="center">Technology</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Frontend</strong></td>
+        <td>React, TypeScript, Vite, TanStack Query, React Router</td>
+      </tr>
+      <tr>
+        <td><strong>Styling</strong></td>
+        <td>Tailwind CSS, shadcn/ui</td>
+      </tr>
+      <tr>
+        <td><strong>Backend</strong></td>
+        <td>NestJS, Node.js</td>
+      </tr>
+      <tr>
+        <td><strong>Database</strong></td>
+        <td>PostgreSQL (pgvector), Prisma</td>
+      </tr>
+      <tr>
+        <td><strong>Auth</strong></td>
+        <td>Google & GitHub OAuth</td>
+      </tr>
+      <tr>
+        <td><strong>Infrastructure</strong></td>
+        <td>AWS, Terraform</td>
+      </tr>
+      <tr>
+        <td><strong>CI/CD</strong></td>
+        <td>GitHub Actions</td>
+      </tr>
+      <tr>
+        <td><strong>Hosting</strong></td>
+        <td>AWS </td>
+      </tr>
+    </tbody>
+  </table>
 
 <br />
 
