@@ -32,7 +32,8 @@ export default defineConfig(({ mode }) => ({
         "http://gitmate.org",
         "www.gitmate.org",
         "gitmate.org",
-        "frontend-alb-524493602.ap-south-1.elb.amazonaws.com"
+        "frontend-alb-524493602.ap-south-1.elb.amazonaws.com",
+        "frontend-alb-1539614862.ap-south-1.elb.amazonaws.com"
     ]
   }
 }));
