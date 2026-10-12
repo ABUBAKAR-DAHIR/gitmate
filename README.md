@@ -74,7 +74,7 @@ Gitmate connects to your GitHub, reads what you actually build, and matches you 
 ### Discover developers
 
 <div align="center">
-<img src="feed.png" alt="Discovery feed with similarity score" width="92%" />
+<img src="./public/feed.png" alt="Discovery feed with similarity score" width="92%" />
 </div>
 
 ### Dashboard, in light and dark
