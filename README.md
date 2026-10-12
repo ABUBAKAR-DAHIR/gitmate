@@ -18,7 +18,7 @@ Build together. Grow together.
 
 <br />
 
-<img src="home.png" alt="Gitmate home page" width="92%" />
+<img src="./public/home.png" alt="Gitmate home page" width="92%" />
 
 </div>
 
@@ -83,7 +83,7 @@ Gitmate connects to your GitHub, reads what you actually build, and matches you 
 
 | Light | Dark |
 |:---:|:---:|
-| <img src="dashboard-light.png" alt="Dashboard in light mode" width="100%" /> | <img src="dashboard-dark.png" alt="Dashboard in dark mode" width="100%" /> |
+| <img src="./public/dashboard-light.png" alt="Dashboard in light mode" width="100%" /> | <img src="./public/dashboard-dark.png" alt="Dashboard in dark mode" width="100%" /> |
 
 </div>
 
@@ -93,7 +93,7 @@ Gitmate connects to your GitHub, reads what you actually build, and matches you 
 
 | Profile | Settings |
 |:---:|:---:|
-| <img src="profile.png" alt="Developer profile with GitHub stats" width="100%" /> | <img src="settings.png" alt="Settings page" width="100%" /> |
+| <img src="./public/profile.png" alt="Developer profile with GitHub stats" width="100%" /> | <img src="./public/settings.png" alt="Settings page" width="100%" /> |
 
 </div>
 
