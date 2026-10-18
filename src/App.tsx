@@ -24,6 +24,8 @@ import { ThemeProviderC } from "./providers/ThemeProviderC";
 import { ThreeCircles } from "react-loader-spinner";
 import { DeveloperCard } from "./components/cards/DeveloperCard";
 import OtherProfile from "./pages/OtherProfile";
+import Privacy from "./pages/Privacy";
+import TermsOfService from "./pages/TermsOfService";
 
     const queryClient = new QueryClient();
 
@@ -44,6 +46,8 @@ import OtherProfile from "./pages/OtherProfile";
                         <Route path="/" element={<Index />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/why-gitmate" element={<WhyGitMate />} />
+                        <Route path="/privacy" element={<Privacy />} />
+                        <Route path="/terms-of-service" element={<TermsOfService />} />
                         <Route path="*" element={<NotFound />} />
 
                         <Route element={<ProtectedRoute />}>

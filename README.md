@@ -224,9 +224,10 @@ Contributions, suggestions, and bug reports are welcome.
 
 <br />
 
+<div align="center">
+
 ## 👤 Author
 
-<div align="center">
 
 **Abubakar Dahir Hassan**
 
